@@ -1,7 +1,14 @@
 import { Module } from "@nestjs/common";
-import { AccountsModule } from "./accounts/accounts.module";
+import { MongooseModule } from "@nestjs/mongoose";
+import { Constants } from "./constants";
+import { GamesModule } from "./games/games.module";
 
 @Module({
-  imports: [AccountsModule],
+  imports: [
+    GamesModule,
+    MongooseModule.forRoot(
+      `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URL}/${Constants.CATALOG_DB}?authSource=admin`,
+    ),
+  ],
 })
 export class AppModule {}

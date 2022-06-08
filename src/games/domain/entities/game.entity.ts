@@ -1,14 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import { accountOwnership } from "./account-ownership.middleware";
 
 @ObjectType()
 @Schema({ timestamps: true })
-export class Account {
+export class Game {
   id?: string;
 
-  @Field({ nullable: true, middleware: [accountOwnership] })
+  @Field()
   @Prop({ unique: true })
   email?: string;
 
@@ -19,11 +18,11 @@ export class Account {
   @Prop()
   password?: string;
 
-  @Field({ nullable: true, middleware: [accountOwnership] })
+  @Field()
   @Prop()
   role?: string;
 
-  @Field({ nullable: true, middleware: [accountOwnership] })
+  @Field()
   @Prop()
   active?: boolean;
 
@@ -31,10 +30,10 @@ export class Account {
   @Prop()
   avatarPath?: string;
 
-  @Field({ nullable: true, middleware: [accountOwnership] })
+  @Field()
   createdAt?: Date;
 
-  @Field({ nullable: true, middleware: [accountOwnership] })
+  @Field()
   updatedAt?: Date;
 
   @Prop()
@@ -76,6 +75,6 @@ export class Account {
   }
 }
 
-export type AccountDocument = Account & Document;
+export type GameDocument = Game & Document;
 
-export const AccountSchema = SchemaFactory.createForClass(Account);
+export const GameSchema = SchemaFactory.createForClass(Game);
