@@ -1,6 +1,7 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
+import { RatingDistribution } from "../value-objects/rating-distribution.vo";
 
 @ObjectType()
 @Schema({ timestamps: true })
@@ -9,26 +10,42 @@ export class Game {
 
   @Field()
   @Prop({ unique: true })
-  email?: string;
-
-  @Field()
-  @Prop({ unique: true })
-  username?: string;
-
-  @Prop()
-  password?: string;
+  title?: string;
 
   @Field()
   @Prop()
-  role?: string;
+  description?: string;
 
   @Field()
   @Prop()
-  active?: boolean;
+  company?: string;
+
+  @Field(() => Int)
+  @Prop()
+  yearReleased?: number;
 
   @Field()
   @Prop()
-  avatarPath?: string;
+  image?: string;
+
+  @Field(() => [String])
+  @Prop([String])
+  tags?: string[];
+
+  @Prop([String])
+  playedUsernames?: string[];
+
+  @Prop([String])
+  pendingUsernames?: string[];
+
+  @Prop(RatingDistribution)
+  ratingDistribution?: RatingDistribution;
+
+  @Prop()
+  averageRating?: number;
+
+  @Prop()
+  popularity?: number;
 
   @Field()
   createdAt?: Date;
@@ -36,42 +53,42 @@ export class Game {
   @Field()
   updatedAt?: Date;
 
-  @Prop()
-  token?: string;
-
   constructor({
     id,
-    email,
-    username,
-    password,
-    role,
-    active,
-    avatarPath,
+    title,
+    description,
+    company,
+    yearReleased,
+    image,
+    tags,
+    playedUsernames,
+    pendingUsernames,
     createdAt,
     updatedAt,
-    token,
   }: {
     id?: string;
-    email?: string;
-    username?: string;
-    password?: string;
-    role?: string;
-    active?: boolean;
-    avatarPath?: string;
+    title?: string;
+    description?: string;
+    company?: string;
+    yearReleased?: number;
+    image?: string;
+    tags?: string[];
+    playedUsernames?: string[];
+    pendingUsernames?: string[];
     createdAt?: Date;
     updatedAt?: Date;
-    token?: string;
   }) {
     this.id = id;
-    this.email = email;
-    this.username = username;
-    this.password = password;
-    this.role = role;
-    this.active = active;
-    this.avatarPath = avatarPath;
+    this.title = title;
+    this.description = description;
+    this.company = company;
+    this.yearReleased = yearReleased;
+    this.image = image;
+    this.tags = tags;
+    this.playedUsernames = playedUsernames;
+    this.pendingUsernames = pendingUsernames;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.token = token;
   }
 }
 

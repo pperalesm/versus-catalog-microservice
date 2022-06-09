@@ -3,11 +3,12 @@
 # ------------------------------------------------------
 
 type Game {
-  email: String!
-  username: String!
-  role: String!
-  active: Boolean!
-  avatarPath: String!
+  title: String!
+  description: String!
+  company: String!
+  yearReleased: Int!
+  image: String!
+  tags: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -18,5 +19,34 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  test: Game!
+  findGames(findGamesDto: FindGamesDto!): [Game!]!
+}
+
+input FindGamesDto {
+  page: Pagination!
+  filter: GameFilter
+  sort: GameSort
+}
+
+input Pagination {
+  limit: Int!
+  skip: Int!
+}
+
+input GameFilter {
+  title: String
+  company: String
+  yearReleased: Int
+  tags: [String!]
+}
+
+input GameSort {
+  title: Sorting
+  averageRating: Sorting
+  popularity: Sorting
+}
+
+enum Sorting {
+  Asc
+  Desc
 }
