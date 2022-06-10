@@ -112,4 +112,12 @@ export class GamesService {
 
     return await this.findGames(arrayOptions);
   }
+
+  async findTags() {
+    return await this.gamesRepository.findTags();
+  }
+
+  async findCompanies() {
+    return await this.gamesRepository.findCompanies();
+  }
 }

@@ -26,6 +26,8 @@ type Query {
   findGames(arrayOptions: ArrayOptions!): [Game!]!
   findPlayedGames(arrayOptions: ArrayOptions!): [Game!]!
   findPendingGames(arrayOptions: ArrayOptions!): [Game!]!
+  findTags: [String!]!
+  findCompanies: [String!]!
 }
 
 input ArrayOptions {

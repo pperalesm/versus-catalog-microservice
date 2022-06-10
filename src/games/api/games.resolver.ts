@@ -33,4 +33,14 @@ export class GamesResolver {
   ) {
     return await this.gamesService.findPendingGames(authUser, arrayOptions);
   }
+
+  @Query(() => [String])
+  async findTags() {
+    return await this.gamesService.findTags();
+  }
+
+  @Query(() => [String])
+  async findCompanies() {
+    return await this.gamesService.findCompanies();
+  }
 }
