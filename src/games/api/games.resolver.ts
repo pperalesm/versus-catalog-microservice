@@ -13,7 +13,7 @@ export class GamesResolver {
 
   @Query(() => [Game])
   async findGames(@Args("arrayOptions") arrayOptions: ArrayOptions) {
-    return await this.gamesService.findGames(arrayOptions);
+    return await this.gamesService.find(arrayOptions);
   }
 
   @Query(() => [Game])
@@ -22,7 +22,7 @@ export class GamesResolver {
     @AuthenticatedUser() authUser: AuthUser,
     @Args("arrayOptions") arrayOptions: ArrayOptions,
   ) {
-    return await this.gamesService.findPlayedGames(authUser, arrayOptions);
+    return await this.gamesService.findPlayed(authUser, arrayOptions);
   }
 
   @Query(() => [Game])
@@ -31,7 +31,7 @@ export class GamesResolver {
     @AuthenticatedUser() authUser: AuthUser,
     @Args("arrayOptions") arrayOptions: ArrayOptions,
   ) {
-    return await this.gamesService.findPendingGames(authUser, arrayOptions);
+    return await this.gamesService.findPending(authUser, arrayOptions);
   }
 
   @Query(() => [String])
@@ -42,5 +42,10 @@ export class GamesResolver {
   @Query(() => [String])
   async findCompanies() {
     return await this.gamesService.findCompanies();
+  }
+
+  @Query(() => Game)
+  async findGame(@Args("title") title: string) {
+    return await this.gamesService.findOne(title);
   }
 }

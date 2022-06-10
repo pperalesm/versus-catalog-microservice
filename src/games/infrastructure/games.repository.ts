@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Pagination } from "src/common/models/pagination.model";
@@ -12,7 +12,7 @@ export class GamesRepository {
     private gameModel: Model<GameDocument>,
   ) {}
 
-  async findGames(
+  async find(
     page: Pagination,
     filter?: Record<string, unknown>,
     sort?: GameSort,
@@ -30,5 +30,15 @@ export class GamesRepository {
 
   async findCompanies(): Promise<string[]> {
     return await this.gameModel.distinct("company");
+  }
+
+  async findOne(filter: Record<string, unknown>): Promise<Game> {
+    const game = await this.gameModel.findOne(filter);
+
+    if (!game) {
+      throw new NotFoundException();
+    }
+
+    return game;
   }
 }

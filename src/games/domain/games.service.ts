@@ -10,7 +10,7 @@ import { GamesRepository } from "../infrastructure/games.repository";
 export class GamesService {
   constructor(private readonly gamesRepository: GamesRepository) {}
 
-  async findGames(arrayOptions: ArrayOptions) {
+  async find(arrayOptions: ArrayOptions) {
     let sort = new GameSort();
     let filter = {};
     let titleFilter = {};
@@ -86,31 +86,27 @@ export class GamesService {
       sort.title = Sorting.Asc;
     }
 
-    return await this.gamesRepository.findGames(
-      arrayOptions.page,
-      filter,
-      sort,
-    );
+    return await this.gamesRepository.find(arrayOptions.page, filter, sort);
   }
 
-  async findPlayedGames(authUser: AuthUser, arrayOptions: ArrayOptions) {
+  async findPlayed(authUser: AuthUser, arrayOptions: ArrayOptions) {
     if (!arrayOptions.filter) {
       arrayOptions.filter = new GameFilter();
     }
 
     arrayOptions.filter.playedUsernames = [authUser.username];
 
-    return await this.findGames(arrayOptions);
+    return await this.find(arrayOptions);
   }
 
-  async findPendingGames(authUser: AuthUser, arrayOptions: ArrayOptions) {
+  async findPending(authUser: AuthUser, arrayOptions: ArrayOptions) {
     if (!arrayOptions.filter) {
       arrayOptions.filter = new GameFilter();
     }
 
     arrayOptions.filter.pendingUsernames = [authUser.username];
 
-    return await this.findGames(arrayOptions);
+    return await this.find(arrayOptions);
   }
 
   async findTags() {
@@ -119,5 +115,9 @@ export class GamesService {
 
   async findCompanies() {
     return await this.gamesRepository.findCompanies();
+  }
+
+  async findOne(title: string) {
+    return await this.gamesRepository.findOne({ title: title });
   }
 }

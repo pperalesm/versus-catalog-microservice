@@ -28,6 +28,7 @@ type Query {
   findPendingGames(arrayOptions: ArrayOptions!): [Game!]!
   findTags: [String!]!
   findCompanies: [String!]!
+  findGame(title: String!): Game!
 }
 
 input ArrayOptions {
