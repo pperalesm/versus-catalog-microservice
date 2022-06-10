@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { RatingDistribution } from "../value-objects/rating-distribution.vo";
@@ -38,20 +38,17 @@ export class Game {
   @Prop([String])
   pendingUsernames?: string[];
 
+  @Field(() => RatingDistribution)
   @Prop(RatingDistribution)
   ratingDistribution?: RatingDistribution;
 
+  @Field(() => Float)
   @Prop()
   averageRating?: number;
 
+  @Field(() => Int)
   @Prop()
   popularity?: number;
-
-  @Field()
-  createdAt?: Date;
-
-  @Field()
-  updatedAt?: Date;
 
   constructor({
     id,
@@ -63,8 +60,9 @@ export class Game {
     tags,
     playedUsernames,
     pendingUsernames,
-    createdAt,
-    updatedAt,
+    ratingDistribution,
+    averageRating,
+    popularity,
   }: {
     id?: string;
     title?: string;
@@ -75,8 +73,9 @@ export class Game {
     tags?: string[];
     playedUsernames?: string[];
     pendingUsernames?: string[];
-    createdAt?: Date;
-    updatedAt?: Date;
+    ratingDistribution?: RatingDistribution;
+    averageRating?: number;
+    popularity?: number;
   }) {
     this.id = id;
     this.title = title;
@@ -87,8 +86,9 @@ export class Game {
     this.tags = tags;
     this.playedUsernames = playedUsernames;
     this.pendingUsernames = pendingUsernames;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+    this.ratingDistribution = ratingDistribution;
+    this.averageRating = averageRating;
+    this.popularity = popularity;
   }
 }
 

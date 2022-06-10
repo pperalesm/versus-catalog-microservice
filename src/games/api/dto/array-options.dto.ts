@@ -6,7 +6,7 @@ import { GameFilter } from "./game-filter";
 import { GameSort } from "./game-sort";
 
 @InputType()
-export class FindGamesDto {
+export class ArrayOptions {
   @Field(() => Pagination)
   @ValidateNested()
   @Type(() => Pagination)

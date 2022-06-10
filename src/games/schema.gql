@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type RatingDistribution {
+  ones: Int!
+  twos: Int!
+  threes: Int!
+  fours: Int!
+  fives: Int!
+}
+
 type Game {
   title: String!
   description: String!
@@ -9,20 +17,18 @@ type Game {
   yearReleased: Int!
   image: String!
   tags: [String!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  ratingDistribution: RatingDistribution!
+  averageRating: Float!
+  popularity: Int!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Query {
-  findGames(findGamesDto: FindGamesDto!): [Game!]!
+  findGames(arrayOptions: ArrayOptions!): [Game!]!
+  findPlayedGames(arrayOptions: ArrayOptions!): [Game!]!
+  findPendingGames(arrayOptions: ArrayOptions!): [Game!]!
 }
 
-input FindGamesDto {
+input ArrayOptions {
   page: Pagination!
   filter: GameFilter
   sort: GameSort
@@ -36,8 +42,13 @@ input Pagination {
 input GameFilter {
   title: String
   company: String
-  yearReleased: Int
+  yearReleased: IntRange
   tags: [String!]
+}
+
+input IntRange {
+  min: Int!
+  max: Int!
 }
 
 input GameSort {

@@ -1,5 +1,7 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
-import { IsArray, IsInt, IsOptional, IsString } from "class-validator";
+import { Field, InputType } from "@nestjs/graphql";
+import { Type } from "class-transformer";
+import { IsArray, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IntRange } from "src/common/models/int-range.model";
 
 @InputType()
 export class GameFilter {
@@ -13,13 +15,17 @@ export class GameFilter {
   @IsOptional()
   company?: string;
 
-  @Field(() => Int, { nullable: true })
-  @IsInt()
-  @IsOptional()
-  yearReleased?: number;
+  @Field(() => IntRange, { nullable: true })
+  @ValidateNested()
+  @Type(() => IntRange)
+  yearReleased?: IntRange;
 
   @Field(() => [String], { nullable: true })
   @IsArray()
   @IsOptional()
   tags?: string[];
+
+  playedUsernames?: string[];
+
+  pendingUsernames?: string[];
 }
