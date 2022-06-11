@@ -10,10 +10,10 @@ export class GameFilter {
   @IsOptional()
   title?: string;
 
-  @Field({ nullable: true })
-  @IsString()
+  @Field(() => [String], { nullable: true })
+  @IsArray()
   @IsOptional()
-  company?: string;
+  companies?: string[];
 
   @Field(() => IntRange, { nullable: true })
   @ValidateNested()

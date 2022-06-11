@@ -18,6 +18,7 @@ export class GamesService {
     let playedUsernamesFilter = {};
     let pendingUsernamesFilter = {};
     let yearReleasedFilter = {};
+    let companiesFilter = {};
 
     if (arrayOptions.filter) {
       const {
@@ -26,6 +27,7 @@ export class GamesService {
         playedUsernames,
         pendingUsernames,
         yearReleased,
+        companies,
         ...rest
       } = arrayOptions.filter;
 
@@ -70,6 +72,14 @@ export class GamesService {
         };
       }
 
+      if (companies) {
+        companiesFilter = {
+          company: {
+            $in: companies,
+          },
+        };
+      }
+
       filter = {
         ...rest,
         ...titleFilter,
@@ -77,6 +87,7 @@ export class GamesService {
         ...playedUsernamesFilter,
         ...pendingUsernamesFilter,
         ...yearReleasedFilter,
+        ...companiesFilter,
       };
     }
 
