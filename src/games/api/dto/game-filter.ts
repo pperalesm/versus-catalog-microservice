@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { Type } from "class-transformer";
 import { IsArray, IsOptional, IsString, ValidateNested } from "class-validator";
-import { IntRange } from "src/common/models/int-range.model";
+import { IntRange } from "backend-common";
 
 @InputType()
 export class GameFilter {

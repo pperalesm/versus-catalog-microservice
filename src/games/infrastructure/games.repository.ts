@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Pagination } from "src/common/models/pagination.model";
+import { Pagination } from "backend-common";
 import { GameSort } from "../api/dto/game-sort";
 import { Game, GameDocument } from "../domain/entities/game.entity";
 

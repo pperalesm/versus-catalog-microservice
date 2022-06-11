@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { AuthUser } from "src/common/models/auth-user.model";
-import { Sorting } from "src/common/models/sorting.model";
+import { AuthUser } from "backend-common";
+import { Sorting } from "backend-common";
 import { ArrayOptions } from "../api/dto/array-options.dto";
 import { GameFilter } from "../api/dto/game-filter";
 import { GameSort } from "../api/dto/game-sort";

@@ -1,7 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { ErrorFilter } from "./common/filters/errors.filter";
+import { ErrorsFilter } from "backend-common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -11,7 +11,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalFilters(new ErrorFilter());
+  app.useGlobalFilters(new ErrorsFilter());
   await app.listen(3001);
 }
 bootstrap();

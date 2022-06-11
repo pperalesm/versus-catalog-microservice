@@ -4,7 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
-import { CommonModule } from "src/common/common.module";
+import { CommonModule } from "backend-common";
 import { Game, GameSchema } from "./domain/entities/game.entity";
 import { GamesResolver } from "./api/games.resolver";
 import { GamesService } from "./domain/games.service";

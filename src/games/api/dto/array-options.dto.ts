@@ -1,7 +1,7 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { Type } from "class-transformer";
 import { ValidateNested } from "class-validator";
-import { Pagination } from "src/common/models/pagination.model";
+import { Pagination } from "backend-common";
 import { GameFilter } from "./game-filter";
 import { GameSort } from "./game-sort";
 

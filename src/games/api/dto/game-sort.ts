@@ -1,6 +1,6 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { IsEnum, IsOptional } from "class-validator";
-import { Sorting } from "src/common/models/sorting.model";
+import { Sorting } from "backend-common";
 
 @InputType()
 export class GameSort {

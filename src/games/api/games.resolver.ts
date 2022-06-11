@@ -1,8 +1,8 @@
 import { UseGuards } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { AuthenticatedUser } from "src/common/decorators/current-user.decorator";
-import { JwtGqlGuard } from "src/common/guards/jwt-gql.guard";
-import { AuthUser } from "src/common/models/auth-user.model";
+import { AuthenticatedUser } from "backend-common";
+import { JwtGqlGuard } from "backend-common";
+import { AuthUser } from "backend-common";
 import { Game } from "../domain/entities/game.entity";
 import { GamesService } from "../domain/games.service";
 import { ArrayOptions } from "./dto/array-options.dto";
