@@ -64,3 +64,11 @@ enum Sorting {
   Asc
   Desc
 }
+
+type Mutation {
+  addGameToPlayed(title: String!): Game!
+  addGameToPending(title: String!): Game!
+  removeGameFromPlayed(title: String!): Game!
+  removeGameFromPending(title: String!): Game!
+  moveGameToPlayed(title: String!): Game!
+}

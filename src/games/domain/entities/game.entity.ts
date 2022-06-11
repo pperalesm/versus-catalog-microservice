@@ -4,7 +4,7 @@ import { Document } from "mongoose";
 import { RatingDistribution } from "../value-objects/rating-distribution.vo";
 
 @ObjectType()
-@Schema({ timestamps: true })
+@Schema()
 export class Game {
   id?: string;
 

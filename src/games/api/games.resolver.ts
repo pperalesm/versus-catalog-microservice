@@ -1,5 +1,5 @@
 import { UseGuards } from "@nestjs/common";
-import { Args, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { AuthenticatedUser } from "src/common/decorators/current-user.decorator";
 import { JwtGqlGuard } from "src/common/guards/jwt-gql.guard";
 import { AuthUser } from "src/common/models/auth-user.model";
@@ -47,5 +47,50 @@ export class GamesResolver {
   @Query(() => Game)
   async findGame(@Args("title") title: string) {
     return await this.gamesService.findOne(title);
+  }
+
+  @Mutation(() => Game)
+  @UseGuards(JwtGqlGuard)
+  async addGameToPlayed(
+    @AuthenticatedUser() authUser: AuthUser,
+    @Args("title") title: string,
+  ) {
+    return await this.gamesService.updateToPlayed(authUser, title);
+  }
+
+  @Mutation(() => Game)
+  @UseGuards(JwtGqlGuard)
+  async addGameToPending(
+    @AuthenticatedUser() authUser: AuthUser,
+    @Args("title") title: string,
+  ) {
+    return await this.gamesService.updateToPending(authUser, title);
+  }
+
+  @Mutation(() => Game)
+  @UseGuards(JwtGqlGuard)
+  async removeGameFromPlayed(
+    @AuthenticatedUser() authUser: AuthUser,
+    @Args("title") title: string,
+  ) {
+    return await this.gamesService.removeFromPlayed(authUser, title);
+  }
+
+  @Mutation(() => Game)
+  @UseGuards(JwtGqlGuard)
+  async removeGameFromPending(
+    @AuthenticatedUser() authUser: AuthUser,
+    @Args("title") title: string,
+  ) {
+    return await this.gamesService.removeFromPending(authUser, title);
+  }
+
+  @Mutation(() => Game)
+  @UseGuards(JwtGqlGuard)
+  async moveGameToPlayed(
+    @AuthenticatedUser() authUser: AuthUser,
+    @Args("title") title: string,
+  ) {
+    return await this.gamesService.moveToPlayed(authUser, title);
   }
 }

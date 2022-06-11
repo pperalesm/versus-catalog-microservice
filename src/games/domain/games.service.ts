@@ -5,6 +5,7 @@ import { ArrayOptions } from "../api/dto/array-options.dto";
 import { GameFilter } from "../api/dto/game-filter";
 import { GameSort } from "../api/dto/game-sort";
 import { GamesRepository } from "../infrastructure/games.repository";
+import { Game } from "./entities/game.entity";
 
 @Injectable()
 export class GamesService {
@@ -130,5 +131,43 @@ export class GamesService {
 
   async findOne(title: string) {
     return await this.gamesRepository.findOne({ title: title });
+  }
+
+  async updateToPlayed(authUser: AuthUser, title: string) {
+    const filter = { title: title };
+    const updateInfo = { $addToSet: { playedUsernames: authUser.username } };
+
+    return await this.gamesRepository.updateOne(filter, updateInfo);
+  }
+
+  async updateToPending(authUser: AuthUser, title: string) {
+    const filter = { title: title };
+    const updateInfo = { $addToSet: { pendingUsernames: authUser.username } };
+
+    return await this.gamesRepository.updateOne(filter, updateInfo);
+  }
+
+  async removeFromPlayed(authUser: AuthUser, title: string) {
+    const filter = { title: title };
+    const updateInfo = { $pull: { playedUsernames: authUser.username } };
+
+    return await this.gamesRepository.updateOne(filter, updateInfo);
+  }
+
+  async removeFromPending(authUser: AuthUser, title: string) {
+    const filter = { title: title };
+    const updateInfo = { $pull: { pendingUsernames: authUser.username } };
+
+    return await this.gamesRepository.updateOne(filter, updateInfo);
+  }
+
+  async moveToPlayed(authUser: AuthUser, title: string) {
+    const filter = { title: title };
+    const updateInfo = {
+      $addToSet: { playedUsernames: authUser.username },
+      $pull: { pendingUsernames: authUser.username },
+    };
+
+    return await this.gamesRepository.updateOne(filter, updateInfo);
   }
 }

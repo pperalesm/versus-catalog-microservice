@@ -41,4 +41,19 @@ export class GamesRepository {
 
     return game;
   }
+
+  async updateOne(
+    filter: Record<string, unknown>,
+    updateInfo: Record<string, unknown>,
+  ): Promise<Game> {
+    const game = await this.gameModel.findOneAndUpdate(filter, updateInfo, {
+      new: true,
+    });
+
+    if (!game) {
+      throw new NotFoundException();
+    }
+
+    return game;
+  }
 }
