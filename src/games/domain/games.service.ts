@@ -5,7 +5,6 @@ import { ArrayOptions } from "../api/dto/array-options.dto";
 import { GameFilter } from "../api/dto/game-filter";
 import { GameSort } from "../api/dto/game-sort";
 import { GamesRepository } from "../infrastructure/games.repository";
-import { Game } from "./entities/game.entity";
 
 @Injectable()
 export class GamesService {
@@ -14,12 +13,6 @@ export class GamesService {
   async find(arrayOptions: ArrayOptions) {
     let sort = new GameSort();
     let filter = {};
-    let titleFilter = {};
-    let tagsFilter = {};
-    let playedUsernamesFilter = {};
-    let pendingUsernamesFilter = {};
-    let yearReleasedFilter = {};
-    let companiesFilter = {};
 
     if (arrayOptions.filter) {
       const {
@@ -31,6 +24,12 @@ export class GamesService {
         pendingUsernames,
         ...rest
       } = arrayOptions.filter;
+      let titleFilter = {};
+      let tagsFilter = {};
+      let playedUsernamesFilter = {};
+      let pendingUsernamesFilter = {};
+      let yearReleasedFilter = {};
+      let companiesFilter = {};
 
       if (title) {
         titleFilter = {
@@ -134,40 +133,40 @@ export class GamesService {
   }
 
   async updateToPlayed(authUser: AuthUser, title: string) {
-    const filter = { title: title };
-    const updateInfo = { $addToSet: { playedUsernames: authUser.username } };
-
-    return await this.gamesRepository.updateOne(filter, updateInfo);
+    return await this.gamesRepository.updateOne(
+      { title: title },
+      { $addToSet: { playedUsernames: authUser.username } },
+    );
   }
 
   async updateToPending(authUser: AuthUser, title: string) {
-    const filter = { title: title };
-    const updateInfo = { $addToSet: { pendingUsernames: authUser.username } };
-
-    return await this.gamesRepository.updateOne(filter, updateInfo);
+    return await this.gamesRepository.updateOne(
+      { title: title },
+      { $addToSet: { pendingUsernames: authUser.username } },
+    );
   }
 
   async removeFromPlayed(authUser: AuthUser, title: string) {
-    const filter = { title: title };
-    const updateInfo = { $pull: { playedUsernames: authUser.username } };
-
-    return await this.gamesRepository.updateOne(filter, updateInfo);
+    return await this.gamesRepository.updateOne(
+      { title: title },
+      { $pull: { playedUsernames: authUser.username } },
+    );
   }
 
   async removeFromPending(authUser: AuthUser, title: string) {
-    const filter = { title: title };
-    const updateInfo = { $pull: { pendingUsernames: authUser.username } };
-
-    return await this.gamesRepository.updateOne(filter, updateInfo);
+    return await this.gamesRepository.updateOne(
+      { title: title },
+      { $pull: { pendingUsernames: authUser.username } },
+    );
   }
 
   async moveToPlayed(authUser: AuthUser, title: string) {
-    const filter = { title: title };
-    const updateInfo = {
-      $addToSet: { playedUsernames: authUser.username },
-      $pull: { pendingUsernames: authUser.username },
-    };
-
-    return await this.gamesRepository.updateOne(filter, updateInfo);
+    return await this.gamesRepository.updateOne(
+      { title: title },
+      {
+        $addToSet: { playedUsernames: authUser.username },
+        $pull: { pendingUsernames: authUser.username },
+      },
+    );
   }
 }
