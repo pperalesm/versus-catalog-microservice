@@ -19,14 +19,14 @@ export class GamesService {
         companies,
         yearReleased,
         tags,
-        playedUsernames,
-        pendingUsernames,
+        playedBy,
+        pendingBy,
         ...rest
       } = arrayOptions.filter;
       let titleFilter = {};
       let tagsFilter = {};
-      let playedUsernamesFilter = {};
-      let pendingUsernamesFilter = {};
+      let playedByFilter = {};
+      let pendingByFilter = {};
       let yearReleasedFilter = {};
       let companiesFilter = {};
 
@@ -63,18 +63,18 @@ export class GamesService {
         };
       }
 
-      if (playedUsernames) {
-        playedUsernamesFilter = {
-          playedUsernames: {
-            $all: playedUsernames,
+      if (playedBy) {
+        playedByFilter = {
+          playedBy: {
+            $all: playedBy,
           },
         };
       }
 
-      if (pendingUsernames) {
-        pendingUsernamesFilter = {
-          pendingUsernames: {
-            $all: pendingUsernames,
+      if (pendingBy) {
+        pendingByFilter = {
+          pendingBy: {
+            $all: pendingBy,
           },
         };
       }
@@ -84,8 +84,8 @@ export class GamesService {
         ...companiesFilter,
         ...yearReleasedFilter,
         ...tagsFilter,
-        ...playedUsernamesFilter,
-        ...pendingUsernamesFilter,
+        ...playedByFilter,
+        ...pendingByFilter,
         ...rest,
       };
     }
@@ -104,7 +104,7 @@ export class GamesService {
       arrayOptions.filter = new GameFilter();
     }
 
-    arrayOptions.filter.playedUsernames = [authUser.username];
+    arrayOptions.filter.playedBy = [authUser.username];
 
     return await this.find(arrayOptions);
   }
@@ -114,7 +114,7 @@ export class GamesService {
       arrayOptions.filter = new GameFilter();
     }
 
-    arrayOptions.filter.pendingUsernames = [authUser.username];
+    arrayOptions.filter.pendingBy = [authUser.username];
 
     return await this.find(arrayOptions);
   }
@@ -134,28 +134,28 @@ export class GamesService {
   async updateToPlayed(authUser: AuthUser, title: string) {
     return await this.gamesRepository.updateOne(
       { title: title },
-      { $addToSet: { playedUsernames: authUser.username } },
+      { $addToSet: { playedBy: authUser.username } },
     );
   }
 
   async updateToPending(authUser: AuthUser, title: string) {
     return await this.gamesRepository.updateOne(
       { title: title },
-      { $addToSet: { pendingUsernames: authUser.username } },
+      { $addToSet: { pendingBy: authUser.username } },
     );
   }
 
   async removeFromPlayed(authUser: AuthUser, title: string) {
     return await this.gamesRepository.updateOne(
       { title: title },
-      { $pull: { playedUsernames: authUser.username } },
+      { $pull: { playedBy: authUser.username } },
     );
   }
 
   async removeFromPending(authUser: AuthUser, title: string) {
     return await this.gamesRepository.updateOne(
       { title: title },
-      { $pull: { pendingUsernames: authUser.username } },
+      { $pull: { pendingBy: authUser.username } },
     );
   }
 
@@ -163,8 +163,8 @@ export class GamesService {
     return await this.gamesRepository.updateOne(
       { title: title },
       {
-        $addToSet: { playedUsernames: authUser.username },
-        $pull: { pendingUsernames: authUser.username },
+        $addToSet: { playedBy: authUser.username },
+        $pull: { pendingBy: authUser.username },
       },
     );
   }

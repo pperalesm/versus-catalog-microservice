@@ -25,7 +25,7 @@ export class GameFilter {
   @IsOptional()
   tags?: string[];
 
-  playedUsernames?: string[];
+  playedBy?: string[];
 
-  pendingUsernames?: string[];
+  pendingBy?: string[];
 }

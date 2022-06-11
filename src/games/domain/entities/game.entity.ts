@@ -33,10 +33,10 @@ export class Game {
   tags?: string[];
 
   @Prop([String])
-  playedUsernames?: string[];
+  playedBy?: string[];
 
   @Prop([String])
-  pendingUsernames?: string[];
+  pendingBy?: string[];
 
   @Field(() => RatingDistribution)
   @Prop(RatingDistribution)
@@ -58,8 +58,8 @@ export class Game {
     yearReleased,
     image,
     tags,
-    playedUsernames,
-    pendingUsernames,
+    playedBy,
+    pendingBy,
     ratingDistribution,
     averageRating,
     popularity,
@@ -71,8 +71,8 @@ export class Game {
     yearReleased?: number;
     image?: string;
     tags?: string[];
-    playedUsernames?: string[];
-    pendingUsernames?: string[];
+    playedBy?: string[];
+    pendingBy?: string[];
     ratingDistribution?: RatingDistribution;
     averageRating?: number;
     popularity?: number;
@@ -84,8 +84,8 @@ export class Game {
     this.yearReleased = yearReleased;
     this.image = image;
     this.tags = tags;
-    this.playedUsernames = playedUsernames;
-    this.pendingUsernames = pendingUsernames;
+    this.playedBy = playedBy;
+    this.pendingBy = pendingBy;
     this.ratingDistribution = ratingDistribution;
     this.averageRating = averageRating;
     this.popularity = popularity;
