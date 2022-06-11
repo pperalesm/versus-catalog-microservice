@@ -11,7 +11,7 @@ export class GamesService {
   constructor(private readonly gamesRepository: GamesRepository) {}
 
   async find(arrayOptions: ArrayOptions) {
-    let sort = new GameSort();
+    let sort = {};
     let filter = {};
 
     if (arrayOptions.filter) {
@@ -92,9 +92,9 @@ export class GamesService {
     }
 
     if (arrayOptions.sort) {
-      sort = arrayOptions.sort;
+      sort = { ...arrayOptions.sort };
     } else {
-      sort.title = Sorting.Asc;
+      sort = { title: Sorting.Asc };
     }
 
     return await this.gamesRepository.find(arrayOptions.page, filter, sort);

@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, SortOrder } from "mongoose";
 import { Pagination } from "backend-common";
-import { GameSort } from "../api/dto/game-sort";
 import { Game, GameDocument } from "../domain/entities/game.entity";
 
 @Injectable()
@@ -15,7 +14,7 @@ export class GamesRepository {
   async find(
     page: Pagination,
     filter?: Record<string, unknown>,
-    sort?: GameSort,
+    sort?: { [key: string]: SortOrder },
   ): Promise<Game[]> {
     return await this.gameModel
       .find(filter)
