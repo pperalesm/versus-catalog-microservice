@@ -23,11 +23,11 @@ export class GamesService {
     if (arrayOptions.filter) {
       const {
         title,
+        companies,
+        yearReleased,
         tags,
         playedUsernames,
         pendingUsernames,
-        yearReleased,
-        companies,
         ...rest
       } = arrayOptions.filter;
 
@@ -35,6 +35,23 @@ export class GamesService {
         titleFilter = {
           title: {
             $regex: new RegExp(title, "i"),
+          },
+        };
+      }
+
+      if (companies) {
+        companiesFilter = {
+          company: {
+            $in: companies,
+          },
+        };
+      }
+
+      if (yearReleased) {
+        yearReleasedFilter = {
+          yearReleased: {
+            $gte: yearReleased.min,
+            $lte: yearReleased.max,
           },
         };
       }
@@ -63,31 +80,14 @@ export class GamesService {
         };
       }
 
-      if (yearReleased) {
-        yearReleasedFilter = {
-          yearReleased: {
-            $gte: yearReleased.min,
-            $lte: yearReleased.max,
-          },
-        };
-      }
-
-      if (companies) {
-        companiesFilter = {
-          company: {
-            $in: companies,
-          },
-        };
-      }
-
       filter = {
-        ...rest,
         ...titleFilter,
+        ...companiesFilter,
+        ...yearReleasedFilter,
         ...tagsFilter,
         ...playedUsernamesFilter,
         ...pendingUsernamesFilter,
-        ...yearReleasedFilter,
-        ...companiesFilter,
+        ...rest,
       };
     }
 
