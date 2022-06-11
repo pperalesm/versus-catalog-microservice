@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { AuthUser } from "backend-common";
 import { Sorting } from "backend-common";
-import { ArrayOptions } from "../api/dto/array-options.dto";
+import { GameOptions } from "../api/dto/game-options";
 import { GameFilter } from "../api/dto/game-filter";
 import { GamesRepository } from "../infrastructure/games.repository";
 
@@ -9,11 +9,11 @@ import { GamesRepository } from "../infrastructure/games.repository";
 export class GamesService {
   constructor(private readonly gamesRepository: GamesRepository) {}
 
-  async find(arrayOptions: ArrayOptions) {
+  async find(gameOptions: GameOptions) {
     let sort = {};
     let filter = {};
 
-    if (arrayOptions.filter) {
+    if (gameOptions.filter) {
       const {
         title,
         companies,
@@ -22,7 +22,7 @@ export class GamesService {
         playedBy,
         pendingBy,
         ...rest
-      } = arrayOptions.filter;
+      } = gameOptions.filter;
       let titleFilter = {};
       let tagsFilter = {};
       let playedByFilter = {};
@@ -90,33 +90,33 @@ export class GamesService {
       };
     }
 
-    if (arrayOptions.sort) {
-      sort = { ...arrayOptions.sort };
+    if (gameOptions.sort) {
+      sort = { ...gameOptions.sort };
     } else {
       sort = { title: Sorting.Asc };
     }
 
-    return await this.gamesRepository.find(arrayOptions.page, filter, sort);
+    return await this.gamesRepository.find(gameOptions.page, filter, sort);
   }
 
-  async findPlayed(authUser: AuthUser, arrayOptions: ArrayOptions) {
-    if (!arrayOptions.filter) {
-      arrayOptions.filter = new GameFilter();
+  async findPlayed(authUser: AuthUser, gameOptions: GameOptions) {
+    if (!gameOptions.filter) {
+      gameOptions.filter = new GameFilter();
     }
 
-    arrayOptions.filter.playedBy = [authUser.username];
+    gameOptions.filter.playedBy = [authUser.username];
 
-    return await this.find(arrayOptions);
+    return await this.find(gameOptions);
   }
 
-  async findPending(authUser: AuthUser, arrayOptions: ArrayOptions) {
-    if (!arrayOptions.filter) {
-      arrayOptions.filter = new GameFilter();
+  async findPending(authUser: AuthUser, gameOptions: GameOptions) {
+    if (!gameOptions.filter) {
+      gameOptions.filter = new GameFilter();
     }
 
-    arrayOptions.filter.pendingBy = [authUser.username];
+    gameOptions.filter.pendingBy = [authUser.username];
 
-    return await this.find(arrayOptions);
+    return await this.find(gameOptions);
   }
 
   async findTags() {

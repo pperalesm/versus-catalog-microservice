@@ -5,33 +5,33 @@ import { JwtGqlGuard } from "backend-common";
 import { AuthUser } from "backend-common";
 import { Game } from "../domain/entities/game.entity";
 import { GamesService } from "../domain/games.service";
-import { ArrayOptions } from "./dto/array-options.dto";
+import { GameOptions } from "./dto/game-options";
 
 @Resolver(() => Game)
 export class GamesResolver {
   constructor(private readonly gamesService: GamesService) {}
 
   @Query(() => [Game])
-  async findGames(@Args("arrayOptions") arrayOptions: ArrayOptions) {
-    return await this.gamesService.find(arrayOptions);
+  async findGames(@Args("gameOptions") gameOptions: GameOptions) {
+    return await this.gamesService.find(gameOptions);
   }
 
   @Query(() => [Game])
   @UseGuards(JwtGqlGuard)
   async findPlayedGames(
     @AuthenticatedUser() authUser: AuthUser,
-    @Args("arrayOptions") arrayOptions: ArrayOptions,
+    @Args("gameOptions") gameOptions: GameOptions,
   ) {
-    return await this.gamesService.findPlayed(authUser, arrayOptions);
+    return await this.gamesService.findPlayed(authUser, gameOptions);
   }
 
   @Query(() => [Game])
   @UseGuards(JwtGqlGuard)
   async findPendingGames(
     @AuthenticatedUser() authUser: AuthUser,
-    @Args("arrayOptions") arrayOptions: ArrayOptions,
+    @Args("gameOptions") gameOptions: GameOptions,
   ) {
-    return await this.gamesService.findPending(authUser, arrayOptions);
+    return await this.gamesService.findPending(authUser, gameOptions);
   }
 
   @Query(() => [String])

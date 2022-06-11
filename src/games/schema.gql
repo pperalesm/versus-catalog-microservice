@@ -23,15 +23,15 @@ type Game {
 }
 
 type Query {
-  findGames(arrayOptions: ArrayOptions!): [Game!]!
-  findPlayedGames(arrayOptions: ArrayOptions!): [Game!]!
-  findPendingGames(arrayOptions: ArrayOptions!): [Game!]!
+  findGames(gameOptions: GameOptions!): [Game!]!
+  findPlayedGames(gameOptions: GameOptions!): [Game!]!
+  findPendingGames(gameOptions: GameOptions!): [Game!]!
   findTags: [String!]!
   findCompanies: [String!]!
   findGame(title: String!): Game!
 }
 
-input ArrayOptions {
+input GameOptions {
   page: Pagination!
   filter: GameFilter
   sort: GameSort
