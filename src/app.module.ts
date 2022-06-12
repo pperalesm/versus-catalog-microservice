@@ -7,7 +7,7 @@ import { GamesModule } from "./games/games.module";
   imports: [
     GamesModule,
     MongooseModule.forRoot(
-      `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URL}/${Constants.CATALOG_DB}?authSource=admin`,
+      `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URL}/${Constants.CATALOG_DB}?retryWrites=true&w=majority`,
     ),
   ],
 })
