@@ -1,12 +1,15 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, SortOrder } from "mongoose";
 import { Pagination } from "backend-common";
 import { Game, GameDocument } from "../domain/entities/game.entity";
+import { ClientKafka } from "@nestjs/microservices";
+import { Constants } from "src/constants";
 
 @Injectable()
 export class GamesRepository {
   constructor(
+    @Inject("KAFKA") private readonly kafka: ClientKafka,
     @InjectModel(Game.name)
     private gameModel: Model<GameDocument>,
   ) {}
@@ -24,6 +27,7 @@ export class GamesRepository {
   }
 
   async findTags(): Promise<string[]> {
+    this.kafka.emit(Constants.GAME_CREATED_EVENT, "{osea: heallo}");
     return await this.gameModel.distinct("tags");
   }
 

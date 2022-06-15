@@ -9,19 +9,24 @@ import { Game, GameSchema } from "./domain/entities/game.entity";
 import { GamesResolver } from "./api/games.resolver";
 import { GamesService } from "./domain/games.service";
 import { GamesRepository } from "./infrastructure/games.repository";
+import { ClientsModule, Transport } from "@nestjs/microservices";
+import { Constants } from "src/constants";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: "local.env",
-      ignoreEnvFile: process.env.NODE_ENV && process.env.NODE_ENV != "local",
-    }),
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), "src/games/schema.gql"),
-      context: ({ req, res }) => ({ req, res }),
-    }),
+    ClientsModule.register([
+      {
+        name: "KAFKA",
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: Constants.KAFKA_CLIENT_ID,
+            brokers: [process.env.KAFKA_URL],
+          },
+        },
+      },
+    ]),
     CommonModule,
   ],
   providers: [GamesResolver, GamesService, GamesRepository],
