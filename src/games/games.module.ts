@@ -7,9 +7,14 @@ import { GamesService } from "./domain/games.service";
 import { GamesRepository } from "./infrastructure/games.repository";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { Constants } from "src/constants";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: "local.env",
+      ignoreEnvFile: process.env.NODE_ENV && process.env.NODE_ENV != "local",
+    }),
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
     ClientsModule.register([
       {

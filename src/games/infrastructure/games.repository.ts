@@ -4,7 +4,6 @@ import { Model, SortOrder } from "mongoose";
 import { Pagination } from "backend-common";
 import { Game, GameDocument } from "../domain/entities/game.entity";
 import { ClientKafka } from "@nestjs/microservices";
-import { Constants } from "src/constants";
 
 @Injectable()
 export class GamesRepository {
@@ -27,7 +26,6 @@ export class GamesRepository {
   }
 
   async findTags(): Promise<string[]> {
-    this.kafka.emit(Constants.GAME_CREATED_EVENT, "{osea: heallo}");
     return await this.gameModel.distinct("tags");
   }
 
