@@ -1,7 +1,12 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, SortOrder } from "mongoose";
-import { Pagination } from "backend-common";
+import { CommonConstants, Pagination } from "backend-common";
 import { Game, GameDocument } from "../domain/entities/game.entity";
 import { ClientKafka } from "@nestjs/microservices";
 
@@ -12,6 +17,18 @@ export class GamesRepository {
     @InjectModel(Game.name)
     private gameModel: Model<GameDocument>,
   ) {}
+
+  async create(game: Game): Promise<Game> {
+    try {
+      const createdGame = await this.gameModel.create(game);
+
+      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, createdGame.toJSON());
+
+      return createdGame;
+    } catch (e) {
+      throw new ConflictException();
+    }
+  }
 
   async find(
     page: Pagination,

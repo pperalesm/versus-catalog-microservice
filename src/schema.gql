@@ -18,8 +18,8 @@ type Game {
   image: String!
   tags: [String!]!
   ratingDistribution: RatingDistribution!
-  averageRating: Float!
-  averagePayToWin: Float!
+  averageRating: Float
+  averagePayToWin: Float
   popularity: Int!
 }
 
@@ -68,9 +68,19 @@ enum Sorting {
 }
 
 type Mutation {
+  createGame(createGameDto: CreateGameDto!): Game!
   addGameToPlayed(title: String!): Game!
   addGameToPending(title: String!): Game!
   removeGameFromPlayed(title: String!): Game!
   removeGameFromPending(title: String!): Game!
   moveGameToPlayed(title: String!): Game!
+}
+
+input CreateGameDto {
+  title: String!
+  description: String!
+  company: String!
+  yearReleased: Int!
+  image: String!
+  tags: [String!]!
 }

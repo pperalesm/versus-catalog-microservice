@@ -1,15 +1,28 @@
 import { UseGuards } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { AuthenticatedUser } from "backend-common";
+import {
+  AuthenticatedUser,
+  CommonConstants,
+  Roles,
+  RolesGqlGuard,
+} from "backend-common";
 import { JwtGqlGuard } from "backend-common";
 import { AuthUser } from "backend-common";
 import { Game } from "../domain/entities/game.entity";
 import { GamesService } from "../domain/games.service";
+import { CreateGameDto } from "./dto/create-game.dto";
 import { GameOptions } from "./dto/game-options";
 
 @Resolver(() => Game)
 export class GamesResolver {
   constructor(private readonly gamesService: GamesService) {}
+
+  @Mutation(() => Game)
+  @Roles(CommonConstants.ADMIN_ROLE)
+  @UseGuards(JwtGqlGuard, RolesGqlGuard)
+  async createGame(@Args("createGameDto") createGameDto: CreateGameDto) {
+    return await this.gamesService.create(createGameDto);
+  }
 
   @Query(() => [Game])
   async findGames(@Args("gameOptions") gameOptions: GameOptions) {

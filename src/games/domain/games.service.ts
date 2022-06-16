@@ -4,10 +4,25 @@ import { Sorting } from "backend-common";
 import { GameOptions } from "../api/dto/game-options";
 import { GameFilter } from "../api/dto/game-filter";
 import { GamesRepository } from "../infrastructure/games.repository";
+import { Game } from "./entities/game.entity";
+import { RatingDistribution } from "./value-objects/rating-distribution.vo";
+import { CreateGameDto } from "../api/dto/create-game.dto";
 
 @Injectable()
 export class GamesService {
   constructor(private readonly gamesRepository: GamesRepository) {}
+
+  async create(createGameDto: CreateGameDto) {
+    return await this.gamesRepository.create(
+      new Game({
+        ...createGameDto,
+        playedBy: [],
+        pendingBy: [],
+        ratingDistribution: new RatingDistribution(0, 0, 0, 0, 0),
+        popularity: 0,
+      }),
+    );
+  }
 
   async find(gameOptions: GameOptions) {
     let sort = {};

@@ -42,11 +42,11 @@ export class Game {
   @Prop(RatingDistribution)
   ratingDistribution?: RatingDistribution;
 
-  @Field(() => Float)
+  @Field(() => Float, { nullable: true })
   @Prop()
   averageRating?: number;
 
-  @Field(() => Float)
+  @Field(() => Float, { nullable: true })
   @Prop()
   averagePayToWin?: number;
 

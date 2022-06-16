@@ -22,4 +22,18 @@ export class RatingDistribution {
   @Field(() => Int)
   @Prop()
   fives: number = 0;
+
+  constructor(
+    ones: number,
+    twos: number,
+    threes: number,
+    fours: number,
+    fives: number,
+  ) {
+    this.ones = ones;
+    this.twos = twos;
+    this.threes = threes;
+    this.fours = fours;
+    this.fives = fives;
+  }
 }
