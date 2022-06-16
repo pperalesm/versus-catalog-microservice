@@ -19,16 +19,18 @@ export class GamesService {
         companies,
         yearReleased,
         tags,
+        averagePayToWin,
         playedBy,
         pendingBy,
         ...rest
       } = gameOptions.filter;
       let titleFilter = {};
+      let companiesFilter = {};
+      let yearReleasedFilter = {};
       let tagsFilter = {};
+      let averagePayToWinFilter = {};
       let playedByFilter = {};
       let pendingByFilter = {};
-      let yearReleasedFilter = {};
-      let companiesFilter = {};
 
       if (title) {
         titleFilter = {
@@ -63,6 +65,15 @@ export class GamesService {
         };
       }
 
+      if (averagePayToWin) {
+        averagePayToWinFilter = {
+          averagePayToWin: {
+            $gte: averagePayToWin.min,
+            $lte: averagePayToWin.max,
+          },
+        };
+      }
+
       if (playedBy) {
         playedByFilter = {
           playedBy: {
@@ -84,6 +95,7 @@ export class GamesService {
         ...companiesFilter,
         ...yearReleasedFilter,
         ...tagsFilter,
+        ...averagePayToWinFilter,
         ...playedByFilter,
         ...pendingByFilter,
         ...rest,

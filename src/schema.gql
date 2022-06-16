@@ -19,6 +19,7 @@ type Game {
   tags: [String!]!
   ratingDistribution: RatingDistribution!
   averageRating: Float!
+  averagePayToWin: Float!
   popularity: Int!
 }
 
@@ -47,6 +48,7 @@ input GameFilter {
   companies: [String!]
   yearReleased: IntRange
   tags: [String!]
+  averagePayToWin: IntRange
 }
 
 input IntRange {

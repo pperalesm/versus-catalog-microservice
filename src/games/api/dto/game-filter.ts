@@ -25,6 +25,11 @@ export class GameFilter {
   @IsOptional()
   tags?: string[];
 
+  @Field(() => IntRange, { nullable: true })
+  @ValidateNested()
+  @Type(() => IntRange)
+  averagePayToWin?: IntRange;
+
   playedBy?: string[];
 
   pendingBy?: string[];

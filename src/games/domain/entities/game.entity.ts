@@ -46,6 +46,10 @@ export class Game {
   @Prop()
   averageRating?: number;
 
+  @Field(() => Float)
+  @Prop()
+  averagePayToWin?: number;
+
   @Field(() => Int)
   @Prop()
   popularity?: number;
@@ -62,6 +66,7 @@ export class Game {
     pendingBy,
     ratingDistribution,
     averageRating,
+    averagePayToWin,
     popularity,
   }: {
     id?: string;
@@ -75,6 +80,7 @@ export class Game {
     pendingBy?: string[];
     ratingDistribution?: RatingDistribution;
     averageRating?: number;
+    averagePayToWin?: number;
     popularity?: number;
   }) {
     this.id = id;
@@ -88,6 +94,7 @@ export class Game {
     this.pendingBy = pendingBy;
     this.ratingDistribution = ratingDistribution;
     this.averageRating = averageRating;
+    this.averagePayToWin = averagePayToWin;
     this.popularity = popularity;
   }
 }
