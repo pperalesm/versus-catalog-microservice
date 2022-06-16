@@ -24,6 +24,13 @@ export class GamesResolver {
     return await this.gamesService.create(createGameDto);
   }
 
+  @Mutation(() => Game)
+  @Roles(CommonConstants.ADMIN_ROLE)
+  @UseGuards(JwtGqlGuard, RolesGqlGuard)
+  async deleteGame(@Args("title") title: string) {
+    return await this.gamesService.deleteOne(title);
+  }
+
   @Query(() => [Game])
   async findGames(@Args("gameOptions") gameOptions: GameOptions) {
     return await this.gamesService.find(gameOptions);

@@ -30,6 +30,18 @@ export class GamesRepository {
     }
   }
 
+  async deleteOne(filter: Record<string, unknown>): Promise<Game> {
+    const game = await this.gameModel.findOneAndDelete(filter);
+
+    if (!game) {
+      throw new NotFoundException();
+    }
+
+    this.kafka.emit(CommonConstants.GAME_DELETED_EVENT, game.toJSON());
+
+    return game;
+  }
+
   async find(
     page: Pagination,
     filter?: Record<string, unknown>,

@@ -69,6 +69,7 @@ enum Sorting {
 
 type Mutation {
   createGame(createGameDto: CreateGameDto!): Game!
+  deleteGame(title: String!): Game!
   addGameToPlayed(title: String!): Game!
   addGameToPending(title: String!): Game!
   removeGameFromPlayed(title: String!): Game!

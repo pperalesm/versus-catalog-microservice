@@ -24,6 +24,10 @@ export class GamesService {
     );
   }
 
+  async deleteOne(title: string) {
+    return await this.gamesRepository.deleteOne({ title: title });
+  }
+
   async find(gameOptions: GameOptions) {
     let sort = {};
     let filter = {};
