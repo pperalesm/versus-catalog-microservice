@@ -5,7 +5,6 @@ import { GameOptions } from "../api/dto/game-options";
 import { GameFilter } from "../api/dto/game-filter";
 import { GamesRepository } from "../infrastructure/games.repository";
 import { Game } from "./entities/game.entity";
-import { RatingDistribution } from "./value-objects/rating-distribution.vo";
 import { CreateGameDto } from "../api/dto/create-game.dto";
 
 @Injectable()
@@ -18,7 +17,8 @@ export class GamesService {
         ...createGameDto,
         playedBy: [],
         pendingBy: [],
-        ratingDistribution: new RatingDistribution(0, 0, 0, 0, 0),
+        ratingDistribution: [0, 0, 0, 0, 0],
+        payToWinDistribution: [0, 0, 0, 0, 0],
         popularity: 0,
       }),
     );
@@ -36,8 +36,12 @@ export class GamesService {
       const {
         title,
         companies,
-        yearReleased,
-        tags,
+        status,
+        releaseDate,
+        gameModes,
+        genres,
+        platforms,
+        playerPerspectives,
         averagePayToWin,
         playedBy,
         pendingBy,
@@ -45,8 +49,12 @@ export class GamesService {
       } = gameOptions.filter;
       let titleFilter = {};
       let companiesFilter = {};
-      let yearReleasedFilter = {};
-      let tagsFilter = {};
+      let statusFilter = {};
+      let releaseDateFilter = {};
+      let gameModesFilter = {};
+      let genresFilter = {};
+      let platformsFilter = {};
+      let playerPerspectivesFilter = {};
       let averagePayToWinFilter = {};
       let playedByFilter = {};
       let pendingByFilter = {};
@@ -61,25 +69,66 @@ export class GamesService {
 
       if (companies) {
         companiesFilter = {
-          company: {
-            $in: companies,
+          $or: [
+            {
+              developer: {
+                $in: companies,
+              },
+            },
+            {
+              publisher: {
+                $in: companies,
+              },
+            },
+          ],
+        };
+      }
+
+      if (status) {
+        statusFilter = {
+          status: {
+            $in: status,
           },
         };
       }
 
-      if (yearReleased) {
-        yearReleasedFilter = {
-          yearReleased: {
-            $gte: yearReleased.min,
-            $lte: yearReleased.max,
+      if (releaseDate) {
+        releaseDateFilter = {
+          releaseDate: {
+            $gte: releaseDate.min,
+            $lte: releaseDate.max,
           },
         };
       }
 
-      if (tags) {
-        tagsFilter = {
-          tags: {
-            $all: tags,
+      if (gameModes) {
+        gameModesFilter = {
+          gameModes: {
+            $all: gameModes,
+          },
+        };
+      }
+
+      if (genres) {
+        genresFilter = {
+          genres: {
+            $all: genres,
+          },
+        };
+      }
+
+      if (platforms) {
+        platformsFilter = {
+          platforms: {
+            $in: platforms,
+          },
+        };
+      }
+
+      if (playerPerspectives) {
+        playerPerspectivesFilter = {
+          playerPerspectives: {
+            $in: playerPerspectives,
           },
         };
       }
@@ -112,8 +161,12 @@ export class GamesService {
       filter = {
         ...titleFilter,
         ...companiesFilter,
-        ...yearReleasedFilter,
-        ...tagsFilter,
+        ...statusFilter,
+        ...releaseDateFilter,
+        ...gameModesFilter,
+        ...genresFilter,
+        ...platformsFilter,
+        ...playerPerspectivesFilter,
         ...averagePayToWinFilter,
         ...playedByFilter,
         ...pendingByFilter,
@@ -150,12 +203,29 @@ export class GamesService {
     return await this.find(gameOptions);
   }
 
-  async findTags() {
-    return await this.gamesRepository.findTags();
+  async findGameModes() {
+    return await this.gamesRepository.findGameModes();
+  }
+
+  async findGenres() {
+    return await this.gamesRepository.findGenres();
+  }
+
+  async findPlatforms() {
+    return await this.gamesRepository.findPlatforms();
+  }
+
+  async findPlayerPerspectives() {
+    return await this.gamesRepository.findPlayerPerspectives();
   }
 
   async findCompanies() {
-    return await this.gamesRepository.findCompanies();
+    const [developers, publishers] = await Promise.all([
+      this.gamesRepository.findDevelopers(),
+      this.gamesRepository.findPublishers(),
+    ]);
+
+    return Array.from(new Set([...developers, ...publishers]));
   }
 
   async findOne(title: string) {

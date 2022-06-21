@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { Type } from "class-transformer";
 import { IsArray, IsOptional, IsString, ValidateNested } from "class-validator";
-import { IntRange } from "backend-common";
+import { DateRange, IntRange } from "backend-common";
 
 @InputType()
 export class GameFilter {
@@ -15,15 +15,35 @@ export class GameFilter {
   @IsOptional()
   companies?: string[];
 
-  @Field(() => IntRange, { nullable: true })
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  status?: string[];
+
+  @Field(() => DateRange, { nullable: true })
   @ValidateNested()
-  @Type(() => IntRange)
-  yearReleased?: IntRange;
+  @Type(() => DateRange)
+  releaseDate?: DateRange;
 
   @Field(() => [String], { nullable: true })
   @IsArray()
   @IsOptional()
-  tags?: string[];
+  gameModes?: string[];
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  genres?: string[];
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  platforms?: string[];
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  playerPerspectives?: string[];
 
   @Field(() => IntRange, { nullable: true })
   @ValidateNested()

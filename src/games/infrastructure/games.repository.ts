@@ -54,12 +54,28 @@ export class GamesRepository {
       .sort(sort);
   }
 
-  async findTags(): Promise<string[]> {
-    return await this.gameModel.distinct("tags");
+  async findGameModes(): Promise<string[]> {
+    return await this.gameModel.distinct("gameModes");
   }
 
-  async findCompanies(): Promise<string[]> {
-    return await this.gameModel.distinct("company");
+  async findGenres(): Promise<string[]> {
+    return await this.gameModel.distinct("genres");
+  }
+
+  async findPlatforms(): Promise<string[]> {
+    return await this.gameModel.distinct("platforms");
+  }
+
+  async findPlayerPerspectives(): Promise<string[]> {
+    return await this.gameModel.distinct("playerPerspectives");
+  }
+
+  async findDevelopers(): Promise<string[]> {
+    return await this.gameModel.distinct("developer");
+  }
+
+  async findPublishers(): Promise<string[]> {
+    return await this.gameModel.distinct("publisher");
   }
 
   async findOne(filter: Record<string, unknown>): Promise<Game> {

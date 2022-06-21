@@ -55,8 +55,23 @@ export class GamesResolver {
   }
 
   @Query(() => [String])
-  async findTags() {
-    return await this.gamesService.findTags();
+  async findGameModes() {
+    return await this.gamesService.findGameModes();
+  }
+
+  @Query(() => [String])
+  async findGenres() {
+    return await this.gamesService.findGenres();
+  }
+
+  @Query(() => [String])
+  async findPlatforms() {
+    return await this.gamesService.findPlatforms();
+  }
+
+  @Query(() => [String])
+  async findPlayerPerspectives() {
+    return await this.gamesService.findPlayerPerspectives();
   }
 
   @Query(() => [String])

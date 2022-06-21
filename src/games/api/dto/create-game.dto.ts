@@ -1,5 +1,5 @@
-import { InputType, Field, Int } from "@nestjs/graphql";
-import { IsArray, IsInt, IsString } from "class-validator";
+import { InputType, Field } from "@nestjs/graphql";
+import { IsArray, IsDate, IsOptional, IsString } from "class-validator";
 
 @InputType()
 export class CreateGameDto {
@@ -7,23 +7,58 @@ export class CreateGameDto {
   @IsString()
   title: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsString()
-  company: string;
+  @IsOptional()
+  developer?: string;
 
-  @Field(() => Int)
-  @IsInt()
-  yearReleased: number;
-
-  @Field()
+  @Field({ nullable: true })
   @IsString()
-  image: string;
+  @IsOptional()
+  publisher?: string;
 
-  @Field(() => [String])
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  status?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  officialWebsite?: string;
+
+  @Field({ nullable: true })
+  @IsDate()
+  @IsOptional()
+  releaseDate?: Date;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  image?: string;
+
+  @Field(() => [String], { nullable: true })
   @IsArray()
-  tags: string[];
+  @IsOptional()
+  gameModes?: string[];
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  genres?: string[];
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  platforms?: string[];
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  playerPerspectives?: string[];
 }

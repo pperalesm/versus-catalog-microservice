@@ -2,32 +2,39 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type RatingDistribution {
-  ones: Int!
-  twos: Int!
-  threes: Int!
-  fours: Int!
-  fives: Int!
-}
-
 type Game {
   title: String!
   description: String!
-  company: String!
-  yearReleased: Int!
+  developer: String!
+  publisher: String!
+  status: String!
+  officialWebsite: String!
+  releaseDate: DateTime!
   image: String!
-  tags: [String!]!
-  ratingDistribution: RatingDistribution!
+  gameModes: [String!]!
+  genres: [String!]!
+  platforms: [String!]!
+  playerPerspectives: [String!]!
+  ratingDistribution: [Int!]!
   averageRating: Float
+  payToWinDistribution: [Int!]!
   averagePayToWin: Float
   popularity: Int!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   findGames(gameOptions: GameOptions!): [Game!]!
   findPlayedGames(gameOptions: GameOptions!): [Game!]!
   findPendingGames(gameOptions: GameOptions!): [Game!]!
-  findTags: [String!]!
+  findGameModes: [String!]!
+  findGenres: [String!]!
+  findPlatforms: [String!]!
+  findPlayerPerspectives: [String!]!
   findCompanies: [String!]!
   findGame(title: String!): Game!
 }
@@ -46,9 +53,18 @@ input Pagination {
 input GameFilter {
   title: String
   companies: [String!]
-  yearReleased: IntRange
-  tags: [String!]
+  status: [String!]
+  releaseDate: DateRange
+  gameModes: [String!]
+  genres: [String!]
+  platforms: [String!]
+  playerPerspectives: [String!]
   averagePayToWin: IntRange
+}
+
+input DateRange {
+  min: DateTime!
+  max: DateTime!
 }
 
 input IntRange {
@@ -79,9 +95,15 @@ type Mutation {
 
 input CreateGameDto {
   title: String!
-  description: String!
-  company: String!
-  yearReleased: Int!
-  image: String!
-  tags: [String!]!
+  description: String
+  developer: String
+  publisher: String
+  status: String
+  officialWebsite: String
+  releaseDate: DateTime
+  image: String
+  gameModes: [String!]
+  genres: [String!]
+  platforms: [String!]
+  playerPerspectives: [String!]
 }

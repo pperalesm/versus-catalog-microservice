@@ -1,7 +1,6 @@
 import { Field, Float, Int, ObjectType } from "@nestjs/graphql";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import { RatingDistribution } from "../value-objects/rating-distribution.vo";
 
 @ObjectType()
 @Schema()
@@ -18,11 +17,23 @@ export class Game {
 
   @Field()
   @Prop()
-  company?: string;
+  developer?: string;
 
-  @Field(() => Int)
+  @Field()
   @Prop()
-  yearReleased?: number;
+  publisher?: string;
+
+  @Field()
+  @Prop()
+  status?: string;
+
+  @Field()
+  @Prop()
+  officialWebsite?: string;
+
+  @Field()
+  @Prop()
+  releaseDate?: Date;
 
   @Field()
   @Prop()
@@ -30,7 +41,19 @@ export class Game {
 
   @Field(() => [String])
   @Prop([String])
-  tags?: string[];
+  gameModes?: string[];
+
+  @Field(() => [String])
+  @Prop([String])
+  genres?: string[];
+
+  @Field(() => [String])
+  @Prop([String])
+  platforms?: string[];
+
+  @Field(() => [String])
+  @Prop([String])
+  playerPerspectives?: string[];
 
   @Prop([String])
   playedBy?: string[];
@@ -38,13 +61,17 @@ export class Game {
   @Prop([String])
   pendingBy?: string[];
 
-  @Field(() => RatingDistribution)
-  @Prop(RatingDistribution)
-  ratingDistribution?: RatingDistribution;
+  @Field(() => [Int])
+  @Prop([Number])
+  ratingDistribution?: number[];
 
   @Field(() => Float, { nullable: true })
   @Prop()
   averageRating?: number;
+
+  @Field(() => [Int])
+  @Prop([Number])
+  payToWinDistribution?: number[];
 
   @Field(() => Float, { nullable: true })
   @Prop()
@@ -58,42 +85,63 @@ export class Game {
     id,
     title,
     description,
-    company,
-    yearReleased,
+    developer,
+    publisher,
+    status,
+    officialWebsite,
+    releaseDate,
     image,
-    tags,
+    gameModes,
+    genres,
+    platforms,
+    playerPerspectives,
     playedBy,
     pendingBy,
     ratingDistribution,
     averageRating,
+    payToWinDistribution,
     averagePayToWin,
     popularity,
   }: {
     id?: string;
     title?: string;
     description?: string;
-    company?: string;
-    yearReleased?: number;
+    developer?: string;
+    publisher?: string;
+    status?: string;
+    officialWebsite?: string;
+    releaseDate?: Date;
     image?: string;
-    tags?: string[];
+    gameModes?: string[];
+    genres?: string[];
+    platforms?: string[];
+    playerPerspectives?: string[];
     playedBy?: string[];
     pendingBy?: string[];
-    ratingDistribution?: RatingDistribution;
+    ratingDistribution?: number[];
     averageRating?: number;
+    payToWinDistribution?: number[];
     averagePayToWin?: number;
     popularity?: number;
   }) {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.company = company;
-    this.yearReleased = yearReleased;
+    this.developer = developer;
+    this.publisher = publisher;
+    this.status = status;
+    this.officialWebsite = officialWebsite;
+    this.releaseDate = releaseDate;
     this.image = image;
-    this.tags = tags;
+    this.gameModes = gameModes;
+    this.genres = genres;
+    this.platforms = platforms;
+    this.playerPerspectives = playerPerspectives;
     this.playedBy = playedBy;
     this.pendingBy = pendingBy;
     this.ratingDistribution = ratingDistribution;
     this.averageRating = averageRating;
+    this.payToWinDistribution = payToWinDistribution;
     this.averagePayToWin = averagePayToWin;
     this.popularity = popularity;
   }
