@@ -11,47 +11,47 @@ export class Game {
   @Prop({ unique: true })
   title?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   description?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   developer?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   publisher?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   status?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   officialWebsite?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   releaseDate?: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @Prop()
   image?: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   @Prop([String])
   gameModes?: string[];
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   @Prop([String])
   genres?: string[];
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   @Prop([String])
   platforms?: string[];
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   @Prop([String])
   playerPerspectives?: string[];
 
