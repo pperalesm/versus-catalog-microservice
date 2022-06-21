@@ -8,6 +8,7 @@ import { GamesRepository } from "./infrastructure/games.repository";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { Constants } from "src/constants";
 import { ConfigModule } from "@nestjs/config";
+import { KafkaConsumer } from "./infrastructure/kafka.consumer";
 
 @Module({
   imports: [
@@ -31,5 +32,6 @@ import { ConfigModule } from "@nestjs/config";
     CommonModule,
   ],
   providers: [GamesResolver, GamesService, GamesRepository],
+  controllers: [KafkaConsumer],
 })
 export class GamesModule {}

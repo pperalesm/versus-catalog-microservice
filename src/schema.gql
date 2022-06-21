@@ -4,17 +4,17 @@
 
 type Game {
   title: String!
-  description: String!
-  developer: String!
-  publisher: String!
-  status: String!
-  officialWebsite: String!
-  releaseDate: DateTime!
-  image: String!
-  gameModes: [String!]!
-  genres: [String!]!
-  platforms: [String!]!
-  playerPerspectives: [String!]!
+  description: String
+  developer: String
+  publisher: String
+  status: String
+  officialWebsite: String
+  releaseDate: DateTime
+  image: String
+  gameModes: [String!]
+  genres: [String!]
+  platforms: [String!]
+  playerPerspectives: [String!]
   ratingDistribution: [Int!]!
   averageRating: Float
   payToWinDistribution: [Int!]!
