@@ -92,14 +92,53 @@ export class GamesRepository {
     filter: Record<string, unknown>,
     updateInfo: Record<string, unknown>,
   ): Promise<Game> {
-    const game = await this.gameModel.findOneAndUpdate(filter, updateInfo, {
-      new: true,
-    });
+    const session = await this.gameModel.startSession();
 
-    if (!game) {
+    session.startTransaction();
+
+    const oldGame = await this.gameModel
+      .findOneAndUpdate(filter, updateInfo)
+      .session(session);
+    const newGame = await this.gameModel.findOne(filter).session(session);
+
+    await session.commitTransaction();
+
+    if (!oldGame || !newGame) {
       throw new NotFoundException();
     }
 
-    return game;
+    this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
+      oldReview: oldGame.toJSON(),
+      newReview: newGame.toJSON(),
+    });
+
+    return newGame;
+  }
+
+  async createOrUpdate(
+    filter: Record<string, unknown>,
+    updateInfo: Record<string, unknown>,
+  ): Promise<Game> {
+    const session = await this.gameModel.startSession();
+
+    session.startTransaction();
+
+    const oldGame = await this.gameModel
+      .findOneAndUpdate(filter, updateInfo, { upsert: true })
+      .session(session);
+    const newGame = await this.gameModel.findOne(filter).session(session);
+
+    await session.commitTransaction();
+
+    if (!oldGame) {
+      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, newGame.toJSON());
+    } else {
+      this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
+        oldReview: oldGame.toJSON(),
+        newReview: newGame.toJSON(),
+      });
+    }
+
+    return newGame;
   }
 }

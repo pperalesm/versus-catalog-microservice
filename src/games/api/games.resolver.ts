@@ -128,4 +128,13 @@ export class GamesResolver {
   ) {
     return await this.gamesService.moveToPlayed(authUser, title);
   }
+
+  @Mutation(() => Game)
+  @Roles(CommonConstants.ADMIN_ROLE)
+  @UseGuards(JwtGqlGuard, RolesGqlGuard)
+  async createOrUpdateGame(
+    @Args("createGameDto") createGameDto: CreateGameDto,
+  ) {
+    return await this.gamesService.createOrUpdate(createGameDto);
+  }
 }

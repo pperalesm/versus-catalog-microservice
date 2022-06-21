@@ -91,6 +91,7 @@ type Mutation {
   removeGameFromPlayed(title: String!): Game!
   removeGameFromPending(title: String!): Game!
   moveGameToPlayed(title: String!): Game!
+  createOrUpdateGame(createGameDto: CreateGameDto!): Game!
 }
 
 input CreateGameDto {

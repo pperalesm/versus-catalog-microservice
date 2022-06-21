@@ -16,8 +16,6 @@ export class GamesService {
     return await this.gamesRepository.create(
       new Game({
         ...createGameDto,
-        ratingDistribution: [0, 0, 0, 0, 0],
-        payToWinDistribution: [0, 0, 0, 0, 0],
         popularity: 0,
       }),
     );
@@ -330,6 +328,13 @@ export class GamesService {
     return await this.gamesRepository.updateOne(
       { title: oldReview.game },
       { $inc: { ...ratingDec, ...payToWinDec, ...ratingInc, ...payToWinInc } },
+    );
+  }
+
+  async createOrUpdate(createGameDto: CreateGameDto) {
+    return await this.gamesRepository.createOrUpdate(
+      { title: createGameDto.title },
+      { ...createGameDto },
     );
   }
 }
