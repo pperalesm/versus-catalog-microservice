@@ -119,16 +119,39 @@ export class GamesRepository {
     filter: Record<string, unknown>,
     updateInfo: Record<string, unknown>,
   ): Promise<Game> {
-    const session = await this.gameModel.startSession();
+    let oldGame: GameDocument;
+    let newGame: GameDocument;
 
-    session.startTransaction();
+    let titleCounter = 1;
+    let trying = true;
+    while (trying) {
+      const session = await this.gameModel.startSession();
+      try {
+        session.startTransaction();
+        oldGame = await this.gameModel
+          .findOneAndUpdate(filter, updateInfo, { upsert: true })
+          .session(session);
+        newGame = await this.gameModel.findOne(filter).session(session);
 
-    const oldGame = await this.gameModel
-      .findOneAndUpdate(filter, updateInfo, { upsert: true })
-      .session(session);
-    const newGame = await this.gameModel.findOne(filter).session(session);
-
-    await session.commitTransaction();
+        await session.commitTransaction();
+        trying = false;
+      } catch (e) {
+        if (e.codeName != "WriteConflict" && e.codeName != "DuplicateKey") {
+          console.error(e);
+          console.error(updateInfo.title);
+          trying = false;
+        }
+        if (e.codeName == "DuplicateKey") {
+          updateInfo = {
+            ...updateInfo,
+            title: updateInfo.title + ` (${titleCounter})`,
+          };
+          titleCounter += 1;
+        }
+      } finally {
+        session.endSession();
+      }
+    }
 
     if (!oldGame) {
       this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, newGame.toJSON());
