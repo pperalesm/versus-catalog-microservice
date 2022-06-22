@@ -279,7 +279,7 @@ export class GamesService {
       payToWinInc["payToWinDistribution." + (review.payToWin - 1)] = 1;
     }
 
-    return await this.gamesRepository.updateOne(
+    await this.gamesRepository.updateOne(
       { title: review.game },
       { $inc: { popularity: 1, ...ratingInc, ...payToWinInc } },
     );
@@ -297,7 +297,7 @@ export class GamesService {
       payToWinDec["payToWinDistribution." + (review.payToWin - 1)] = -1;
     }
 
-    return await this.gamesRepository.updateOne(
+    await this.gamesRepository.updateOne(
       { title: review.game },
       { $inc: { popularity: -1, ...ratingDec, ...payToWinDec } },
     );
@@ -309,26 +309,35 @@ export class GamesService {
     const ratingInc = {};
     const payToWinInc = {};
 
-    if (oldReview.rating) {
-      ratingDec["ratingDistribution." + (oldReview.rating - 1)] = -1;
+    if (oldReview.rating != newReview.rating) {
+      if (oldReview.rating) {
+        ratingDec["ratingDistribution." + (oldReview.rating - 1)] = -1;
+      }
+      if (newReview.rating) {
+        ratingInc["ratingDistribution." + (newReview.rating - 1)] = 1;
+      }
     }
 
-    if (oldReview.payToWin) {
-      payToWinDec["payToWinDistribution." + (oldReview.payToWin - 1)] = -1;
+    if (oldReview.payToWin != newReview.payToWin) {
+      if (oldReview.payToWin) {
+        payToWinDec["payToWinDistribution." + (oldReview.payToWin - 1)] = -1;
+      }
+      if (newReview.payToWin) {
+        payToWinInc["payToWinDistribution." + (newReview.payToWin - 1)] = 1;
+      }
     }
 
-    if (newReview.rating) {
-      ratingInc["ratingDistribution." + (newReview.rating - 1)] = 1;
+    if (
+      oldReview.rating != newReview.rating ||
+      oldReview.payToWin != newReview.payToWin
+    ) {
+      await this.gamesRepository.updateOne(
+        { title: oldReview.game },
+        {
+          $inc: { ...ratingDec, ...payToWinDec, ...ratingInc, ...payToWinInc },
+        },
+      );
     }
-
-    if (newReview.payToWin) {
-      payToWinInc["payToWinDistribution." + (newReview.payToWin - 1)] = 1;
-    }
-
-    return await this.gamesRepository.updateOne(
-      { title: oldReview.game },
-      { $inc: { ...ratingDec, ...payToWinDec, ...ratingInc, ...payToWinInc } },
-    );
   }
 
   async createOrUpdate(createGameDto: CreateGameDto) {
