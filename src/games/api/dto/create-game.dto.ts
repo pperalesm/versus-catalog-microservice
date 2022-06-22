@@ -1,8 +1,12 @@
-import { InputType, Field } from "@nestjs/graphql";
-import { IsArray, IsDate, IsOptional, IsString } from "class-validator";
+import { InputType, Field, Int } from "@nestjs/graphql";
+import { IsArray, IsDate, IsInt, IsOptional, IsString } from "class-validator";
 
 @InputType()
 export class CreateGameDto {
+  @Field(() => Int)
+  @IsInt()
+  igdbId: number;
+
   @Field()
   @IsString()
   title: string;

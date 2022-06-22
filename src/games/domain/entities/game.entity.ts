@@ -7,6 +7,9 @@ import { Document } from "mongoose";
 export class Game {
   id?: string;
 
+  @Prop({ unique: true })
+  igdbId?: number;
+
   @Field()
   @Prop({ unique: true })
   title?: string;

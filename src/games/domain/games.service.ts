@@ -13,12 +13,7 @@ export class GamesService {
   constructor(private readonly gamesRepository: GamesRepository) {}
 
   async create(createGameDto: CreateGameDto) {
-    return await this.gamesRepository.create(
-      new Game({
-        ...createGameDto,
-        popularity: 0,
-      }),
-    );
+    return await this.gamesRepository.create(new Game({ ...createGameDto }));
   }
 
   async deleteOne(title: string) {
@@ -337,7 +332,7 @@ export class GamesService {
 
   async createOrUpdate(createGameDto: CreateGameDto) {
     return await this.gamesRepository.createOrUpdate(
-      { title: createGameDto.title },
+      { igdbId: createGameDto.igdbId },
       { ...createGameDto },
     );
   }
