@@ -305,26 +305,21 @@ export class GamesService {
 
   async reviewUpdated(oldReview: Review, newReview: Review) {
     const ratingDec = {};
-    const payToWinDec = {};
     const ratingInc = {};
+    const payToWinDec = {};
     const payToWinInc = {};
 
-    if (oldReview.rating != newReview.rating) {
-      if (oldReview.rating) {
-        ratingDec["ratingDistribution." + (oldReview.rating - 1)] = -1;
-      }
-      if (newReview.rating) {
-        ratingInc["ratingDistribution." + (newReview.rating - 1)] = 1;
-      }
+    if (oldReview.rating) {
+      ratingDec["ratingDistribution." + (oldReview.rating - 1)] = -1;
     }
-
-    if (oldReview.payToWin != newReview.payToWin) {
-      if (oldReview.payToWin) {
-        payToWinDec["payToWinDistribution." + (oldReview.payToWin - 1)] = -1;
-      }
-      if (newReview.payToWin) {
-        payToWinInc["payToWinDistribution." + (newReview.payToWin - 1)] = 1;
-      }
+    if (newReview.rating) {
+      ratingInc["ratingDistribution." + (newReview.rating - 1)] = 1;
+    }
+    if (oldReview.payToWin) {
+      payToWinDec["payToWinDistribution." + (oldReview.payToWin - 1)] = -1;
+    }
+    if (newReview.payToWin) {
+      payToWinInc["payToWinDistribution." + (newReview.payToWin - 1)] = 1;
     }
 
     if (
