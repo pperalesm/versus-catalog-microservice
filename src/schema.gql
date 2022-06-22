@@ -95,6 +95,7 @@ type Mutation {
 }
 
 input CreateGameDto {
+  igdbId: Int!
   title: String!
   description: String
   developer: String
