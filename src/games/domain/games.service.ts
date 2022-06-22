@@ -279,7 +279,7 @@ export class GamesService {
       payToWinInc["payToWinDistribution." + (review.payToWin - 1)] = 1;
     }
 
-    await this.gamesRepository.updateOne(
+    return await this.gamesRepository.updateOne(
       { title: review.game },
       { $inc: { popularity: 1, ...ratingInc, ...payToWinInc } },
     );
@@ -297,7 +297,7 @@ export class GamesService {
       payToWinDec["payToWinDistribution." + (review.payToWin - 1)] = -1;
     }
 
-    await this.gamesRepository.updateOne(
+    return await this.gamesRepository.updateOne(
       { title: review.game },
       { $inc: { popularity: -1, ...ratingDec, ...payToWinDec } },
     );
@@ -326,7 +326,7 @@ export class GamesService {
       oldReview.rating != newReview.rating ||
       oldReview.payToWin != newReview.payToWin
     ) {
-      await this.gamesRepository.updateOne(
+      return await this.gamesRepository.updateOne(
         { title: oldReview.game },
         {
           $inc: { ...ratingDec, ...payToWinDec, ...ratingInc, ...payToWinInc },
