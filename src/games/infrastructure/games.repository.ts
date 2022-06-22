@@ -108,8 +108,8 @@ export class GamesRepository {
     }
 
     this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
-      oldReview: oldGame.toJSON(),
-      newReview: newGame.toJSON(),
+      oldGame: oldGame.toJSON(),
+      newGame: newGame.toJSON(),
     });
 
     return newGame;
@@ -134,8 +134,8 @@ export class GamesRepository {
       this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, newGame.toJSON());
     } else {
       this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
-        oldReview: oldGame.toJSON(),
-        newReview: newGame.toJSON(),
+        oldGame: oldGame.toJSON(),
+        newGame: newGame.toJSON(),
       });
     }
 
