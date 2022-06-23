@@ -138,7 +138,6 @@ export class GamesRepository {
       } catch (e) {
         if (e.codeName != "WriteConflict" && e.codeName != "DuplicateKey") {
           console.error(e);
-          console.error(updateInfo.title);
           trying = false;
         }
         if (e.codeName == "DuplicateKey") {
