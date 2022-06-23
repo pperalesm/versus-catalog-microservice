@@ -122,7 +122,8 @@ export class GamesRepository {
     let oldGame: GameDocument;
     let newGame: GameDocument;
 
-    let titleCounter = 1;
+    let titleCounter = 2;
+    let triedReleaseDate = false;
     let trying = true;
     while (trying) {
       const session = await this.gameModel.startSession();
@@ -142,20 +143,25 @@ export class GamesRepository {
         }
         if (e.codeName == "DuplicateKey") {
           let newTitle = updateInfo.title as string;
-          if (titleCounter == 1) {
-            newTitle = newTitle + ` (1)`;
+          if (!triedReleaseDate && updateInfo.releaseDate) {
+            newTitle =
+              newTitle +
+              ` (${(updateInfo.releaseDate as Date)
+                .toISOString()
+                .slice(0, 10)})`;
+            triedReleaseDate = true;
           } else {
             newTitle =
               newTitle.slice(
                 0,
-                newTitle.length - 3 - titleCounter.toString().length,
-              ) + ` (${titleCounter})`;
+                newTitle.length - 1 - (titleCounter - 1).toString().length,
+              ) + ` ${titleCounter}`;
+            titleCounter += 1;
           }
           updateInfo = {
             ...updateInfo,
             title: newTitle,
           };
-          titleCounter += 1;
         }
       } finally {
         session.endSession();
