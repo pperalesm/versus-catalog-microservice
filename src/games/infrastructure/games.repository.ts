@@ -142,9 +142,19 @@ export class GamesRepository {
           trying = false;
         }
         if (e.codeName == "DuplicateKey") {
+          let newTitle = updateInfo.title as string;
+          if (titleCounter == 1) {
+            newTitle = newTitle + ` (1)`;
+          } else {
+            newTitle =
+              newTitle.slice(
+                0,
+                newTitle.length - 3 - titleCounter.toString().length,
+              ) + ` (${titleCounter})`;
+          }
           updateInfo = {
             ...updateInfo,
-            title: updateInfo.title + ` (${titleCounter})`,
+            title: newTitle,
           };
           titleCounter += 1;
         }
