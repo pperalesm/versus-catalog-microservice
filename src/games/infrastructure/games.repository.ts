@@ -119,50 +119,16 @@ export class GamesRepository {
     filter: Record<string, unknown>,
     updateInfo: Record<string, unknown>,
   ): Promise<Game> {
-    let oldGame: GameDocument;
-    let newGame: GameDocument;
+    const session = await this.gameModel.startSession();
 
-    let titleCounter = 0;
-    let trying = true;
-    while (trying) {
-      const session = await this.gameModel.startSession();
-      try {
-        session.startTransaction();
-        oldGame = await this.gameModel
-          .findOneAndUpdate(filter, updateInfo, { upsert: true })
-          .session(session);
-        newGame = await this.gameModel.findOne(filter).session(session);
+    session.startTransaction();
 
-        await session.commitTransaction();
-        trying = false;
-      } catch (e) {
-        if (e.codeName != "WriteConflict" && e.codeName != "DuplicateKey") {
-          console.error(e);
-          trying = false;
-        }
-        if (e.codeName == "DuplicateKey") {
-          let newTitle = updateInfo.title as string;
-          const date = updateInfo.releaseDate
-            ? (updateInfo.releaseDate as Date)
-            : new Date(0, 0, 0);
-          date.setDate(date.getDate() + titleCounter);
-          if (titleCounter) {
-            newTitle =
-              newTitle.slice(0, newTitle.length - 13) +
-              ` (${date.toISOString().slice(0, 10)})`;
-          } else {
-            newTitle = newTitle + ` (${date.toISOString().slice(0, 10)})`;
-          }
-          titleCounter += 1;
-          updateInfo = {
-            ...updateInfo,
-            title: newTitle,
-          };
-        }
-      } finally {
-        session.endSession();
-      }
-    }
+    const oldGame = await this.gameModel
+      .findOneAndUpdate(filter, updateInfo, { upsert: true })
+      .session(session);
+    const newGame = await this.gameModel.findOne(filter).session(session);
+
+    await session.commitTransaction();
 
     if (!oldGame) {
       this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, newGame.toJSON());

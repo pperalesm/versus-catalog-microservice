@@ -331,9 +331,33 @@ export class GamesService {
   }
 
   async createOrUpdate(createGameDto: CreateGameDto) {
-    return await this.gamesRepository.createOrUpdate(
-      { igdbId: createGameDto.igdbId },
-      { ...createGameDto },
-    );
+    let titleCounter = 0;
+    while (true) {
+      try {
+        return await this.gamesRepository.createOrUpdate(
+          { igdbId: createGameDto.igdbId },
+          { ...createGameDto },
+        );
+      } catch (e) {
+        if (e.codeName == "DuplicateKey") {
+          let newTitle = createGameDto.title;
+          const date = createGameDto.releaseDate
+            ? createGameDto.releaseDate
+            : new Date(0, 0, 0);
+          date.setDate(date.getDate() + titleCounter);
+          if (titleCounter) {
+            newTitle =
+              newTitle.slice(0, newTitle.length - 13) +
+              ` (${date.toISOString().slice(0, 10)})`;
+          } else {
+            newTitle = newTitle + ` (${date.toISOString().slice(0, 10)})`;
+          }
+          createGameDto.title = newTitle;
+          titleCounter += 1;
+        } else if (e.codeName != "WriteConflict") {
+          throw e;
+        }
+      }
+    }
   }
 }
