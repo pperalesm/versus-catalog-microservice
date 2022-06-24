@@ -22,7 +22,10 @@ export class GamesRepository {
     try {
       const createdGame = await this.gameModel.create(game);
 
-      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, createdGame.toJSON());
+      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, {
+        key: createdGame.id,
+        value: createdGame.toJSON(),
+      });
 
       return createdGame;
     } catch (e) {
@@ -37,7 +40,10 @@ export class GamesRepository {
       throw new NotFoundException();
     }
 
-    this.kafka.emit(CommonConstants.GAME_DELETED_EVENT, game.toJSON());
+    this.kafka.emit(CommonConstants.GAME_DELETED_EVENT, {
+      key: game.id,
+      value: game.toJSON(),
+    });
 
     return game;
   }
@@ -108,8 +114,11 @@ export class GamesRepository {
     }
 
     this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
-      oldGame: oldGame.toJSON(),
-      newGame: newGame.toJSON(),
+      key: newGame.id,
+      value: {
+        oldGame: oldGame.toJSON(),
+        newGame: newGame.toJSON(),
+      },
     });
 
     return newGame;
@@ -131,11 +140,17 @@ export class GamesRepository {
     await session.commitTransaction();
 
     if (!oldGame) {
-      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, newGame.toJSON());
+      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, {
+        key: newGame.id,
+        value: newGame.toJSON(),
+      });
     } else {
       this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
-        oldGame: oldGame.toJSON(),
-        newGame: newGame.toJSON(),
+        key: newGame.id,
+        value: {
+          oldGame: oldGame.toJSON(),
+          newGame: newGame.toJSON(),
+        },
       });
     }
 
