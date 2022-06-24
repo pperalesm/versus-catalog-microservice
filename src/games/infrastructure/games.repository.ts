@@ -6,7 +6,13 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, SortOrder } from "mongoose";
-import { CommonConstants, Pagination } from "backend-common";
+import {
+  CommonConstants,
+  CreatedEvent,
+  DeletedEvent,
+  Pagination,
+  UpdatedEvent,
+} from "backend-common";
 import { Game, GameDocument } from "../domain/entities/game.entity";
 import { ClientKafka } from "@nestjs/microservices";
 
@@ -22,9 +28,9 @@ export class GamesRepository {
     try {
       const createdGame = await this.gameModel.create(game);
 
-      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, {
+      this.kafka.emit(CommonConstants.GAMES_TOPIC, {
         key: createdGame.id,
-        value: createdGame.toJSON(),
+        value: new CreatedEvent(createdGame),
       });
 
       return createdGame;
@@ -40,9 +46,9 @@ export class GamesRepository {
       throw new NotFoundException();
     }
 
-    this.kafka.emit(CommonConstants.GAME_DELETED_EVENT, {
+    this.kafka.emit(CommonConstants.GAMES_TOPIC, {
       key: game.id,
-      value: game.toJSON(),
+      value: new DeletedEvent(game),
     });
 
     return game;
@@ -113,12 +119,9 @@ export class GamesRepository {
       throw new NotFoundException();
     }
 
-    this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
+    this.kafka.emit(CommonConstants.GAMES_TOPIC, {
       key: newGame.id,
-      value: {
-        oldGame: oldGame.toJSON(),
-        newGame: newGame.toJSON(),
-      },
+      value: new UpdatedEvent(oldGame, newGame),
     });
 
     return newGame;
@@ -140,17 +143,14 @@ export class GamesRepository {
     await session.commitTransaction();
 
     if (!oldGame) {
-      this.kafka.emit(CommonConstants.GAME_CREATED_EVENT, {
+      this.kafka.emit(CommonConstants.GAMES_TOPIC, {
         key: newGame.id,
-        value: newGame.toJSON(),
+        value: new CreatedEvent(newGame),
       });
     } else {
-      this.kafka.emit(CommonConstants.GAME_UPDATED_EVENT, {
+      this.kafka.emit(CommonConstants.GAMES_TOPIC, {
         key: newGame.id,
-        value: {
-          oldGame: oldGame.toJSON(),
-          newGame: newGame.toJSON(),
-        },
+        value: new UpdatedEvent(oldGame, newGame),
       });
     }
 
