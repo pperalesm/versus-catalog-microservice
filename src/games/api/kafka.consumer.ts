@@ -11,24 +11,24 @@ export class KafkaConsumer {
   @EventPattern(CommonConstants.REVIEWS_TOPIC)
   async handleReviewEvent(
     @Payload("value") data: KafkaEvent,
-    @Payload("timestamp") timestamp: string,
+    @Payload("uuid") uuid: string,
   ) {
     try {
       if (data.type == CommonConstants.CREATED_EVENT) {
         await this.reviewsService.handleCreated(
           new Review({ ...data.payload.item }),
-          timestamp,
+          uuid,
         );
       } else if (data.type == CommonConstants.DELETED_EVENT) {
         await this.reviewsService.handleDeleted(
           new Review({ ...data.payload.item }),
-          timestamp,
+          uuid,
         );
       } else if (data.type == CommonConstants.UPDATED_EVENT) {
         await this.reviewsService.handleUpdated(
           new Review({ ...data.payload.oldItem }),
           new Review({ ...data.payload.newItem }),
-          timestamp,
+          uuid,
         );
       }
     } catch (e) {

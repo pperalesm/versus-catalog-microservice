@@ -20,11 +20,11 @@ export class ReviewsRepository {
   async updateOne(
     gamesFilter: Record<string, unknown>,
     gamesUpdateInfo: Record<string, unknown>,
-    timestamp: string,
+    uuid: string,
   ) {
     await this.connection.transaction(async (session) => {
       await Promise.all([
-        this.eventModel.create([{ timestamp: timestamp }], {
+        this.eventModel.create([{ uuid: uuid }], {
           session: session,
         }),
         this.gameModel.updateOne(gamesFilter, gamesUpdateInfo).session(session),

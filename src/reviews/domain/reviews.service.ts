@@ -6,7 +6,7 @@ import { Review } from "./vo/review.vo";
 export class ReviewsService {
   constructor(private readonly reviewsRepository: ReviewsRepository) {}
 
-  async handleCreated(review: Review, timestamp: string) {
+  async handleCreated(review: Review, uuid: string) {
     const ratingInc = {};
     const payToWinInc = {};
 
@@ -21,11 +21,11 @@ export class ReviewsService {
     await this.reviewsRepository.updateOne(
       { title: review.game },
       { $inc: { popularity: 1, ...ratingInc, ...payToWinInc } },
-      timestamp,
+      uuid,
     );
   }
 
-  async handleDeleted(review: Review, timestamp: string) {
+  async handleDeleted(review: Review, uuid: string) {
     const ratingDec = {};
     const payToWinDec = {};
 
@@ -40,11 +40,11 @@ export class ReviewsService {
     await this.reviewsRepository.updateOne(
       { title: review.game },
       { $inc: { popularity: -1, ...ratingDec, ...payToWinDec } },
-      timestamp,
+      uuid,
     );
   }
 
-  async handleUpdated(oldReview: Review, newReview: Review, timestamp: string) {
+  async handleUpdated(oldReview: Review, newReview: Review, uuid: string) {
     const ratingDec = {};
     const ratingInc = {};
     const payToWinDec = {};
@@ -72,7 +72,7 @@ export class ReviewsService {
         {
           $inc: { ...ratingDec, ...payToWinDec, ...ratingInc, ...payToWinInc },
         },
-        timestamp,
+        uuid,
       );
     }
   }

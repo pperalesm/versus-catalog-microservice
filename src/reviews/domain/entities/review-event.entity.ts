@@ -6,11 +6,11 @@ export class ReviewEvent {
   id?: string;
 
   @Prop({ unique: true })
-  timestamp?: string;
+  uuid?: string;
 
-  constructor({ id, timestamp }: { id?: string; timestamp?: string }) {
+  constructor({ id, uuid }: { id?: string; uuid?: string }) {
     this.id = id;
-    this.timestamp = timestamp;
+    this.uuid = uuid;
   }
 }
 

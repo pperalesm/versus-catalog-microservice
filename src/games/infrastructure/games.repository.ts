@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, SortOrder } from "mongoose";
+import { InjectConnection, InjectModel } from "@nestjs/mongoose";
+import { Connection, Model, SortOrder } from "mongoose";
 import {
   CommonConstants,
   CreatedEvent,
@@ -20,6 +20,7 @@ import { ClientKafka } from "@nestjs/microservices";
 export class GamesRepository {
   constructor(
     @Inject("KAFKA") private readonly kafka: ClientKafka,
+    @InjectConnection() private connection: Connection,
     @InjectModel(Game.name)
     private gameModel: Model<GameDocument>,
   ) {}
@@ -106,16 +107,13 @@ export class GamesRepository {
   ): Promise<Game> {
     let oldGame: GameDocument;
     let newGame: GameDocument;
-    const session = await this.gameModel.startSession();
 
-    await session.withTransaction(async () => {
+    await this.connection.transaction(async (session) => {
       oldGame = await this.gameModel
         .findOneAndUpdate(filter, updateInfo)
         .session(session);
       newGame = await this.gameModel.findOne(filter).session(session);
     });
-
-    await session.endSession();
 
     if (!oldGame || !newGame) {
       throw new NotFoundException();
@@ -135,16 +133,13 @@ export class GamesRepository {
   ): Promise<Game> {
     let oldGame: GameDocument;
     let newGame: GameDocument;
-    const session = await this.gameModel.startSession();
 
-    await session.withTransaction(async () => {
+    await this.connection.transaction(async (session) => {
       oldGame = await this.gameModel
         .findOneAndUpdate(filter, updateInfo, { upsert: true })
         .session(session);
       newGame = await this.gameModel.findOne(filter).session(session);
     });
-
-    await session.endSession();
 
     if (!oldGame) {
       this.kafka.emit(CommonConstants.GAMES_TOPIC, {
