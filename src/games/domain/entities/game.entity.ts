@@ -86,6 +86,7 @@ export class Game {
 
   constructor({
     id,
+    igdbId,
     title,
     description,
     developer,
@@ -107,6 +108,7 @@ export class Game {
     popularity,
   }: {
     id?: string;
+    igdbId?: number;
     title?: string;
     description?: string;
     developer?: string;
@@ -128,6 +130,7 @@ export class Game {
     popularity?: number;
   }) {
     this.id = id;
+    this.igdbId = igdbId;
     this.title = title;
     this.description = description;
     this.developer = developer;
