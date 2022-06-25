@@ -108,7 +108,7 @@ export class GamesRepository {
     let newGame: GameDocument;
     const session = await this.gameModel.startSession();
 
-    session.withTransaction(async () => {
+    await session.withTransaction(async () => {
       oldGame = await this.gameModel
         .findOneAndUpdate(filter, updateInfo)
         .session(session);
@@ -137,7 +137,7 @@ export class GamesRepository {
     let newGame: GameDocument;
     const session = await this.gameModel.startSession();
 
-    session.withTransaction(async () => {
+    await session.withTransaction(async () => {
       oldGame = await this.gameModel
         .findOneAndUpdate(filter, updateInfo, { upsert: true })
         .session(session);
