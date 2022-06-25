@@ -15,6 +15,7 @@ import {
 } from "backend-common";
 import { Game, GameDocument } from "../domain/entities/game.entity";
 import { ClientKafka } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class GamesRepository {
@@ -26,30 +27,44 @@ export class GamesRepository {
   ) {}
 
   async create(game: Game): Promise<Game> {
-    try {
-      const createdGame = await this.gameModel.create(game);
+    let createdGame: GameDocument;
 
-      this.kafka.emit(CommonConstants.GAMES_TOPIC, {
-        key: createdGame.id,
-        value: new CreatedEvent(createdGame),
-      });
+    await this.connection.transaction(async (session) => {
+      try {
+        [createdGame] = await this.gameModel.create([game], {
+          session: session,
+        });
+      } catch (e) {
+        throw new ConflictException();
+      }
 
-      return createdGame;
-    } catch (e) {
-      throw new ConflictException();
-    }
+      await firstValueFrom(
+        this.kafka.emit(CommonConstants.GAMES_TOPIC, {
+          key: createdGame.id,
+          value: new CreatedEvent(createdGame),
+        }),
+      );
+    });
+
+    return createdGame;
   }
 
   async deleteOne(filter: Record<string, unknown>): Promise<Game> {
-    const game = await this.gameModel.findOneAndDelete(filter);
+    let game: GameDocument;
 
-    if (!game) {
-      throw new NotFoundException();
-    }
+    await this.connection.transaction(async (session) => {
+      game = await this.gameModel.findOneAndDelete(filter).session(session);
 
-    this.kafka.emit(CommonConstants.GAMES_TOPIC, {
-      key: game.id,
-      value: new DeletedEvent(game),
+      if (!game) {
+        throw new NotFoundException();
+      }
+
+      await firstValueFrom(
+        this.kafka.emit(CommonConstants.GAMES_TOPIC, {
+          key: game.id,
+          value: new DeletedEvent(game),
+        }),
+      );
     });
 
     return game;
@@ -113,15 +128,17 @@ export class GamesRepository {
         .findOneAndUpdate(filter, updateInfo)
         .session(session);
       newGame = await this.gameModel.findOne(filter).session(session);
-    });
 
-    if (!oldGame || !newGame) {
-      throw new NotFoundException();
-    }
+      if (!oldGame || !newGame) {
+        throw new NotFoundException();
+      }
 
-    this.kafka.emit(CommonConstants.GAMES_TOPIC, {
-      key: newGame.id,
-      value: new UpdatedEvent(oldGame, newGame),
+      await firstValueFrom(
+        this.kafka.emit(CommonConstants.GAMES_TOPIC, {
+          key: newGame.id,
+          value: new UpdatedEvent(oldGame, newGame),
+        }),
+      );
     });
 
     return newGame;
@@ -139,19 +156,23 @@ export class GamesRepository {
         .findOneAndUpdate(filter, updateInfo, { upsert: true })
         .session(session);
       newGame = await this.gameModel.findOne(filter).session(session);
-    });
 
-    if (!oldGame) {
-      this.kafka.emit(CommonConstants.GAMES_TOPIC, {
-        key: newGame.id,
-        value: new CreatedEvent(newGame),
-      });
-    } else {
-      this.kafka.emit(CommonConstants.GAMES_TOPIC, {
-        key: newGame.id,
-        value: new UpdatedEvent(oldGame, newGame),
-      });
-    }
+      if (!oldGame) {
+        await firstValueFrom(
+          this.kafka.emit(CommonConstants.GAMES_TOPIC, {
+            key: newGame.id,
+            value: new CreatedEvent(newGame),
+          }),
+        );
+      } else {
+        await firstValueFrom(
+          this.kafka.emit(CommonConstants.GAMES_TOPIC, {
+            key: newGame.id,
+            value: new UpdatedEvent(oldGame, newGame),
+          }),
+        );
+      }
+    });
 
     return newGame;
   }
