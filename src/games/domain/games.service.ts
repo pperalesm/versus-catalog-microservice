@@ -6,7 +6,6 @@ import { GameFilter } from "../api/dto/game-filter";
 import { GamesRepository } from "../infrastructure/games.repository";
 import { Game } from "./entities/game.entity";
 import { CreateGameDto } from "../api/dto/create-game.dto";
-import { Review } from "./vo/review.vo";
 
 @Injectable()
 export class GamesService {
@@ -262,74 +261,6 @@ export class GamesService {
     );
   }
 
-  async reviewCreated(review: Review) {
-    const ratingInc = {};
-    const payToWinInc = {};
-
-    if (review.rating) {
-      ratingInc["ratingDistribution." + (review.rating - 1)] = 1;
-    }
-
-    if (review.payToWin) {
-      payToWinInc["payToWinDistribution." + (review.payToWin - 1)] = 1;
-    }
-
-    return await this.gamesRepository.updateOne(
-      { title: review.game },
-      { $inc: { popularity: 1, ...ratingInc, ...payToWinInc } },
-    );
-  }
-
-  async reviewDeleted(review: Review) {
-    const ratingDec = {};
-    const payToWinDec = {};
-
-    if (review.rating) {
-      ratingDec["ratingDistribution." + (review.rating - 1)] = -1;
-    }
-
-    if (review.payToWin) {
-      payToWinDec["payToWinDistribution." + (review.payToWin - 1)] = -1;
-    }
-
-    return await this.gamesRepository.updateOne(
-      { title: review.game },
-      { $inc: { popularity: -1, ...ratingDec, ...payToWinDec } },
-    );
-  }
-
-  async reviewUpdated(oldReview: Review, newReview: Review) {
-    const ratingDec = {};
-    const ratingInc = {};
-    const payToWinDec = {};
-    const payToWinInc = {};
-
-    if (oldReview.rating) {
-      ratingDec["ratingDistribution." + (oldReview.rating - 1)] = -1;
-    }
-    if (newReview.rating) {
-      ratingInc["ratingDistribution." + (newReview.rating - 1)] = 1;
-    }
-    if (oldReview.payToWin) {
-      payToWinDec["payToWinDistribution." + (oldReview.payToWin - 1)] = -1;
-    }
-    if (newReview.payToWin) {
-      payToWinInc["payToWinDistribution." + (newReview.payToWin - 1)] = 1;
-    }
-
-    if (
-      oldReview.rating != newReview.rating ||
-      oldReview.payToWin != newReview.payToWin
-    ) {
-      return await this.gamesRepository.updateOne(
-        { title: oldReview.game },
-        {
-          $inc: { ...ratingDec, ...payToWinDec, ...ratingInc, ...payToWinInc },
-        },
-      );
-    }
-  }
-
   async createOrUpdate(createGameDto: CreateGameDto) {
     let titleCounter = 0;
     while (true) {
@@ -354,7 +285,7 @@ export class GamesService {
           }
           createGameDto.title = newTitle;
           titleCounter += 1;
-        } else if (e.codeName != "WriteConflict") {
+        } else {
           throw e;
         }
       }

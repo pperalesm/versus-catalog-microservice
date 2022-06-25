@@ -104,16 +104,18 @@ export class GamesRepository {
     filter: Record<string, unknown>,
     updateInfo: Record<string, unknown>,
   ): Promise<Game> {
+    let oldGame: GameDocument;
+    let newGame: GameDocument;
     const session = await this.gameModel.startSession();
 
-    session.startTransaction();
+    session.withTransaction(async () => {
+      oldGame = await this.gameModel
+        .findOneAndUpdate(filter, updateInfo)
+        .session(session);
+      newGame = await this.gameModel.findOne(filter).session(session);
+    });
 
-    const oldGame = await this.gameModel
-      .findOneAndUpdate(filter, updateInfo)
-      .session(session);
-    const newGame = await this.gameModel.findOne(filter).session(session);
-
-    await session.commitTransaction();
+    await session.endSession();
 
     if (!oldGame || !newGame) {
       throw new NotFoundException();
@@ -131,16 +133,18 @@ export class GamesRepository {
     filter: Record<string, unknown>,
     updateInfo: Record<string, unknown>,
   ): Promise<Game> {
+    let oldGame: GameDocument;
+    let newGame: GameDocument;
     const session = await this.gameModel.startSession();
 
-    session.startTransaction();
+    session.withTransaction(async () => {
+      oldGame = await this.gameModel
+        .findOneAndUpdate(filter, updateInfo, { upsert: true })
+        .session(session);
+      newGame = await this.gameModel.findOne(filter).session(session);
+    });
 
-    const oldGame = await this.gameModel
-      .findOneAndUpdate(filter, updateInfo, { upsert: true })
-      .session(session);
-    const newGame = await this.gameModel.findOne(filter).session(session);
-
-    await session.commitTransaction();
+    await session.endSession();
 
     if (!oldGame) {
       this.kafka.emit(CommonConstants.GAMES_TOPIC, {
