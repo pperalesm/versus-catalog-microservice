@@ -23,12 +23,12 @@ export class ReviewsRepository {
     timestamp: string,
   ) {
     await this.connection.transaction(async (session) => {
-      await this.eventModel.create([{ timestamp: timestamp }], {
-        session: session,
-      });
-      await this.gameModel
-        .updateOne(gamesFilter, gamesUpdateInfo)
-        .session(session);
+      await Promise.all([
+        this.eventModel.create([{ timestamp: timestamp }], {
+          session: session,
+        }),
+        this.gameModel.updateOne(gamesFilter, gamesUpdateInfo).session(session),
+      ]);
     });
   }
 }
