@@ -17,7 +17,9 @@ import { GamesModule } from "./games/games.module";
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       context: ({ req, res }) => ({ req, res }),
     }),
-    MongooseModule.forRoot(process.env.CATALOG_DB, { autoIndex: false }),
+    MongooseModule.forRoot(process.env.CATALOG_DB, {
+      autoIndex: process.env.NODE_ENV != "production",
+    }),
     GamesModule,
   ],
 })
