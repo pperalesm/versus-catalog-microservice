@@ -9,26 +9,23 @@ export class KafkaConsumer {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @EventPattern(CommonConstants.REVIEWS_TOPIC)
-  async handleReviewEvent(
-    @Payload("value") data: KafkaEvent,
-    @Payload("uuid") uuid: string,
-  ) {
+  async handleReviewEvent(@Payload("value") data: KafkaEvent) {
     try {
       if (data.type == CommonConstants.CREATED_EVENT) {
         await this.reviewsService.handleCreated(
           new Review({ ...data.payload.item }),
-          uuid,
+          data.uuid,
         );
       } else if (data.type == CommonConstants.DELETED_EVENT) {
         await this.reviewsService.handleDeleted(
           new Review({ ...data.payload.item }),
-          uuid,
+          data.uuid,
         );
       } else if (data.type == CommonConstants.UPDATED_EVENT) {
         await this.reviewsService.handleUpdated(
           new Review({ ...data.payload.oldItem }),
           new Review({ ...data.payload.newItem }),
-          uuid,
+          data.uuid,
         );
       }
     } catch (e) {
