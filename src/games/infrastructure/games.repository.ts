@@ -153,9 +153,15 @@ export class GamesRepository {
 
     await this.connection.transaction(async (session) => {
       oldGame = await this.gameModel
-        .findOneAndUpdate(filter, updateInfo, { upsert: true })
+        .findOneAndUpdate(filter, updateInfo)
         .session(session);
-      newGame = await this.gameModel.findOne(filter).session(session);
+      if (oldGame) {
+        newGame = await this.gameModel.findOne(filter).session(session);
+      } else {
+        [newGame] = await this.gameModel.create([new Game({ ...updateInfo })], {
+          session: session,
+        });
+      }
 
       if (!oldGame) {
         await firstValueFrom(

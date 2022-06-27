@@ -263,17 +263,18 @@ export class GamesService {
 
   async createOrUpdate(createGameDto: CreateGameDto) {
     let titleCounter = 0;
-    const game = new Game({ ...createGameDto });
     while (true) {
       try {
         return await this.gamesRepository.createOrUpdate(
-          { igdbId: game.igdbId },
-          { ...game },
+          { igdbId: createGameDto.igdbId },
+          { ...createGameDto },
         );
       } catch (e) {
         if (e.codeName == "DuplicateKey") {
-          let newTitle = game.title;
-          const date = game.releaseDate ? game.releaseDate : new Date(0, 0, 0);
+          let newTitle = createGameDto.title;
+          const date = createGameDto.releaseDate
+            ? createGameDto.releaseDate
+            : new Date(0, 0, 0);
           date.setDate(date.getDate() + titleCounter);
           if (titleCounter) {
             newTitle =
@@ -282,7 +283,7 @@ export class GamesService {
           } else {
             newTitle = newTitle + ` (${date.toISOString().slice(0, 10)})`;
           }
-          game.title = newTitle;
+          createGameDto.title = newTitle;
           titleCounter += 1;
         } else {
           throw e;
