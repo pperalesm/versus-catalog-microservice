@@ -1,6 +1,7 @@
 FROM node:16-alpine As initial
 WORKDIR /usr/src/app
 COPY package*.json ./
+COPY backend-common*.tgz ./
 RUN npm install
 COPY . .
 RUN npm run build
@@ -9,6 +10,7 @@ ARG NODE_ENV=development
 ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app
 COPY package*.json ./
+COPY backend-common*.tgz ./
 RUN npm set-script prepare ""
 RUN npm install --omit=dev
 COPY . .
