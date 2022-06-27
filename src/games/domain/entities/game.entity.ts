@@ -145,11 +145,11 @@ export class Game {
     this.playerPerspectives = playerPerspectives;
     this.playedBy = playedBy;
     this.pendingBy = pendingBy;
-    this.ratingDistribution = ratingDistribution;
+    this.ratingDistribution = ratingDistribution || [0, 0, 0, 0, 0];
     this.averageRating = averageRating;
-    this.payToWinDistribution = payToWinDistribution;
+    this.payToWinDistribution = payToWinDistribution || [0, 0, 0, 0, 0];
     this.averagePayToWin = averagePayToWin;
-    this.popularity = popularity;
+    this.popularity = popularity || 0;
   }
 }
 
